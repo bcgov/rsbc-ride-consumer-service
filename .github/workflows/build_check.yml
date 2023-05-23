@@ -6,16 +6,11 @@ on:
       - 'release**'
       - 'main'
       - 'master'
-      - 'feature/buildpushpr'
-      - 'maincomponent/**'
-      - 'feature/producerapi-deployv1'
-      - 'feature/producerapi**'
 
 jobs:
   test_build:
     name: Test the Build
     runs-on: ubuntu-latest
-    # needs: create_env_secrets
     environment: dev
     env:
       APP_ACCEPTED_EVENT_TOPIC: ${{ secrets.APP_ACCEPTED_EVENT_TOPIC }}
