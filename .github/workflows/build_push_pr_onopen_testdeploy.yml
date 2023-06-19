@@ -64,7 +64,7 @@ jobs:
           report_paths: './src/build/test-results/test/TEST-*.xml'
   build:
     runs-on: ubuntu-latest    
-    if: startsWith(github.event.pull_request.head.ref, 'release/')
+    if: (startsWith(github.event.pull_request.head.ref, 'release/')) || (startsWith(github.event.pull_request.head.ref, 'release'))
     environment: test
     env:
       DOCKER_IMAGE_TAG: ${{ github.sha}}

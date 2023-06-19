@@ -65,7 +65,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest    
-    if: startsWith(github.event.pull_request.head.ref, 'release/')
+    if: (startsWith(github.event.pull_request.head.ref, 'release/')) || (startsWith(github.event.pull_request.head.ref, 'release'))
     environment: prod
     env:
       DOCKER_IMAGE_TAG: ${{ github.sha}}
