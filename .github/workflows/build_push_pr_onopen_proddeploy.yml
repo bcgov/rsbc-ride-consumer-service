@@ -4,6 +4,7 @@ on:
     types: [opened, reopened,edited,synchronize]
     branches:   
       - 'main'
+permissions: write-all
 
 
 jobs:
@@ -35,6 +36,13 @@ jobs:
       PAYRECVD_EVENT_DECODED_TOPIC: ${{ secrets.PAYRECVD_EVENT_DECODED_TOPIC }}
       REVSCHED_EVENT_DECODED_TOPIC: ${{ secrets.REVSCHED_EVENT_DECODED_TOPIC }}
       TEST_EVENT_SINK_TOPIC: ${{ secrets.TEST_EVENT_SINK_TOPIC }}
+      ISSUANCE_EVENT_TOPIC: ${{ secrets.ISSUANCE_EVENT_TOPIC }}
+      PAYMENT_EVENT_TOPIC: ${{ secrets.PAYMENT_EVENT_TOPIC }}
+      DISPUTE_EVENT_TOPIC: ${{ secrets.DISPUTE_EVENT_TOPIC }}
+      DISPUTE_UPDATE_EVENT_TOPIC: ${{ secrets.DISPUTE_UPDATE_EVENT_TOPIC }}
+      VIOLATIONS_EVENT_TOPIC: ${{ secrets.VIOLATIONS_EVENT_TOPIC }}
+      PAYQUERY_EVENT_TOPIC: ${{ secrets.PAYQUERY_EVENT_TOPIC }}
+      RECON_SVC_HOST: ${{ secrets.RECON_SVC_HOST }}
 
 
     steps:
@@ -129,6 +137,13 @@ jobs:
               PAYRECVD_EVENT_DECODED_TOPIC: ""
               REVSCHED_EVENT_DECODED_TOPIC: ""
               TEST_EVENT_SINK_TOPIC: ""
+              ISSUANCE_EVENT_TOPIC: ""
+              PAYMENT_EVENT_TOPIC: ""
+              DISPUTE_EVENT_TOPIC: ""
+              DISPUTE_UPDATE_EVENT_TOPIC: ""
+              VIOLATIONS_EVENT_TOPIC: ""
+              PAYQUERY_EVENT_TOPIC: ""
+              RECON_SVC_HOST: ""
 
   deploy_prod_argocd:
     name: Push to Gitops repo for prod deployment via Argocd
