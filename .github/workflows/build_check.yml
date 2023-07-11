@@ -6,6 +6,7 @@ on:
       - 'release**'
       - 'main'
       - 'master'
+permissions: write-all
 
 jobs:
   run_unit_test:
