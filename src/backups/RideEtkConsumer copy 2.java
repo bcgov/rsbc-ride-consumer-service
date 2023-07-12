@@ -42,20 +42,24 @@ public class RideEtkConsumer {
     }
 
 
-    // Monitors the incoming-issuance topic
     @Incoming("incoming-issuance")
     @Blocking
     public void receive(Record<Long, String> event) {
         try {
-            String eventType="issuance";
-            // Read the events from Kafka and send to the Process events method
-            boolean eventStatus=etkConsumerService.processEtkEvents(event,eventType);
-            if(eventStatus==false){
-                throw new Exception("error in processing event");
-            }
+//            logger.debug("Payload: {}", event);
+//            logger.debug("Type of event: {}", event.getClass());
+//            String recordKey= String.valueOf(event.key());
+//            String recordValue = event.value();
+//            String eventString = recordValue.substring(5);
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            evtissuanceeevent evt = objectMapper.readValue(eventString, evtissuanceeevent.class);
+//            logger.info("Payload: {}", evt.getTicketNumber());
+//            logger.info("Kafka decoded issuance event UID: {}", recordKey);
+            etkConsumerService.processEtkEvents(event);
 
+//            consumerService.publishEventtoIssuanceDecodedTopic(event);
         } catch (Exception e) {
-            logger.error("Exception occurred while reading decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
+            logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
         }
     }
 
@@ -63,11 +67,16 @@ public class RideEtkConsumer {
     @Blocking
     public void receive_payment(Record<Long, String> event) {
         try {
-            String eventType="payment";
-            boolean eventStatus=etkConsumerService.processEtkEvents(event,eventType);
-            if(eventStatus==false){
-                throw new Exception("error in processing event");
-            }
+            logger.debug("Payload: {}", event);
+            logger.debug("Type of event: {}", event.getClass());
+            String recordKey= String.valueOf(event.key());
+            String recordValue = event.value();
+            String eventString = recordValue.substring(5);
+            ObjectMapper objectMapper = new ObjectMapper();
+            evtpaymenteevent evt = objectMapper.readValue(eventString, evtpaymenteevent.class);
+            logger.info("Payload: {}", evt);
+            logger.info("Kafka decoded payment event UID: {}", recordKey);
+//            consumerService.publishEventtoIssuanceDecodedTopic(event);
         } catch (Exception e) {
             logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
         }
@@ -75,13 +84,12 @@ public class RideEtkConsumer {
 
     @Incoming("incoming-dispute")
     @Blocking
-    public void receive_dispute(Record<Long, String> event) {
+    public void receive_dispute(String event) {
+        logger.info("Payload: {}", event);
         try {
-            String eventType="dispute";
-            boolean eventStatus=etkConsumerService.processEtkEvents(event,eventType);
-            if(eventStatus==false){
-                throw new Exception("error in processing event");
-            }
+            Long uid = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+            logger.info("Kafka decoded dispute event UID: {}", uid);
+//            consumerService.publishEventtoIssuanceDecodedTopic(event);
         } catch (Exception e) {
             logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
         }
@@ -89,13 +97,12 @@ public class RideEtkConsumer {
 
     @Incoming("incoming-disputeupdate")
     @Blocking
-    public void receive_disputeupdate(Record<Long, String> event) {
+    public void receive_disputeupdate(String event) {
+        logger.info("Payload: {}", event);
         try {
-            String eventType="disputeupdate";
-            boolean eventStatus=etkConsumerService.processEtkEvents(event,eventType);
-            if(eventStatus==false){
-                throw new Exception("error in processing event");
-            }
+            Long uid = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+            logger.info("Kafka decoded disputeupdate event UID: {}", uid);
+//            consumerService.publishEventtoIssuanceDecodedTopic(event);
         } catch (Exception e) {
             logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
         }
@@ -103,13 +110,12 @@ public class RideEtkConsumer {
 
     @Incoming("incoming-violations")
     @Blocking
-    public void receive_violations(Record<Long, String> event) {
+    public void receive_violations(String event) {
+        logger.info("Payload: {}", event);
         try {
-            String eventType="violations";
-            boolean eventStatus=etkConsumerService.processEtkEvents(event,eventType);
-            if(eventStatus==false){
-                throw new Exception("error in processing event");
-            }
+            Long uid = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+            logger.info("Kafka decoded violations event UID: {}", uid);
+//            consumerService.publishEventtoIssuanceDecodedTopic(event);
         } catch (Exception e) {
             logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
         }
@@ -117,13 +123,12 @@ public class RideEtkConsumer {
 
     @Incoming("incoming-payquery")
     @Blocking
-    public void receive_payquery(Record<Long, String> event) {
+    public void receive_payquery(String event) {
+        logger.info("Payload: {}", event);
         try {
-            String eventType="paymentquery";
-            boolean eventStatus=etkConsumerService.processEtkEvents(event,eventType);
-            if(eventStatus==false){
-                throw new Exception("error in processing event");
-            }
+            Long uid = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+            logger.info("Kafka decoded payquery event UID: {}", uid);
+//            consumerService.publishEventtoIssuanceDecodedTopic(event);
         } catch (Exception e) {
             logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
         }
