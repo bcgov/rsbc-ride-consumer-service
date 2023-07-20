@@ -14,6 +14,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import io.smallrye.reactive.messaging.kafka.Record;
 
 
 import org.slf4j.Logger;
@@ -56,14 +57,17 @@ public class RideConsumerModule {
 //    @Path("/ping2")
     @Incoming("incoming-testevent")
     @Blocking
-    public void receive(payloadrecord event) {
+//    public void receive(payloadrecord event) {
+    public void receive(Record<Long, payloadrecord> event) {
         logger.info("Payload: {}", event);
 //        payloadrecord payloaddata=event;
         try {
+            Long recordKey= event.key();
+            payloadrecord recordValue = event.value();
             //Change sendAndAwait to wait at most 5 seconds.
-            Long uid = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
-            logger.info("Kafka event UID: {}", uid);
-            consumerService.publishEventtoDecodedTopic(event.toString(),"sample");
+//            Long uid = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+            logger.info("Kafka event UID: {}", recordKey);
+            consumerService.publishEventtoDecodedTopic(event.toString(),"sample",recordKey);
 //            emitterTestEvt.send(Record.of(uid, payloaddata));
 //            return Response.ok().entity("success").build();
         } catch (Exception e) {
