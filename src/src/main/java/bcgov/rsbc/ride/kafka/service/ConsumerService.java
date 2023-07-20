@@ -62,7 +62,7 @@ public class ConsumerService {
 
 
 
-    public boolean publishEventtoDecodedTopic(String eventPayload,String eventType) {
+    public boolean publishEventtoDecodedTopic(String eventPayload,String eventType,Long uid) {
 
 
 
@@ -70,14 +70,14 @@ public class ConsumerService {
             case "sample":
                 // code block
                 logger.info(eventPayload);
-                Long uid = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+//                Long uid = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
                 emitterTestEvt.send(Record.of(uid.toString(), eventPayload)).await().atMost(Duration.ofSeconds(5));
                 break;
             case "app_accepted":
                 // code block
                 try {
                     logger.info(eventPayload);
-                    uid = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+//                    uid = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
                     emitterAppAccptdEvent.send(Record.of(uid.toString(), eventPayload)).await().atMost(Duration.ofSeconds(5));
                 } catch (Exception e) {
                     logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
@@ -87,7 +87,7 @@ public class ConsumerService {
                 // code block
                 try {
                     logger.info(eventPayload);
-                    uid = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+//                    uid = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
                     emitterDisclosureSentEvent.send(Record.of(uid.toString(), eventPayload)).await().atMost(Duration.ofSeconds(5));
                 } catch (Exception e) {
                     logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
@@ -97,7 +97,7 @@ public class ConsumerService {
                 // code block
                 try {
                     logger.info(eventPayload);
-                    uid = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+//                    uid = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
                     emitterEvidenceSubmitEvent.send(Record.of(uid.toString(), eventPayload)).await().atMost(Duration.ofSeconds(5));
                 } catch (Exception e) {
                     logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
@@ -107,7 +107,7 @@ public class ConsumerService {
                 // code block
                 try {
                     logger.info(eventPayload);
-                    uid = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+//                    uid = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
                     emitterPayRecvdEvent.send(Record.of(uid.toString(), eventPayload)).await().atMost(Duration.ofSeconds(5));
                 } catch (Exception e) {
                     logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
@@ -117,7 +117,7 @@ public class ConsumerService {
                 // code block
                 try {
                     logger.info(eventPayload);
-                    uid = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+//                    uid = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
                     emitterRevSchedEvent.send(Record.of(uid.toString(), eventPayload)).await().atMost(Duration.ofSeconds(5));
                 } catch (Exception e) {
                     logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
