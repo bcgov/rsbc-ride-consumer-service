@@ -63,16 +63,19 @@ public class RideDFConsumerModule {
 
     }
 
-    
 
     @Incoming("incoming-appaccepted")
     @Blocking
+//    public void receive(appacceptedpayloadrecord event) {
     public void receive(Record<Long, appacceptedpayloadrecord> event) {
         logger.info("Payload: {}", event);
         try {
             Long recordKey= event.key();
             appacceptedpayloadrecord recordValue = event.value();
+
+//            Long uid = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
             logger.info("Kafka decoded event UID: {}", recordKey);
+//            logger.info("Kafka decoded event UID: {}", recordValue.toString());
             consumerService.publishEventtoDecodedTopic(recordValue.toString(),recordValue.getEventType().toString(),recordKey);
         } catch (Exception e) {
             logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
@@ -81,11 +84,13 @@ public class RideDFConsumerModule {
 
     @Incoming("incoming-disclosuresent")
     @Blocking
+//    public void receive(disclosuresentpayloadrecord event) {
     public void receive_disclosure(Record<Long, disclosuresentpayloadrecord> event) {
         logger.info("Payload: {}", event);
         try {
             Long recordKey= event.key();
             disclosuresentpayloadrecord recordValue = event.value();
+//            Long uid = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
             logger.info("Kafka decoded event UID: {}", recordKey);
             consumerService.publishEventtoDecodedTopic(recordValue.toString(),recordValue.getEventType().toString(),recordKey);
         } catch (Exception e) {
@@ -95,11 +100,13 @@ public class RideDFConsumerModule {
 
     @Incoming("incoming-evidencesubmit")
     @Blocking
+//    public void receive(evidencesubmittedpayloadrecord event) {
     public void receive_evsubmitted(Record<Long, evidencesubmittedpayloadrecord> event) {
         logger.info("Payload: {}", event);
         try {
             Long recordKey= event.key();
             evidencesubmittedpayloadrecord recordValue = event.value();
+//            Long uid = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
             logger.info("Kafka decoded event UID: {}", recordKey);
             consumerService.publishEventtoDecodedTopic(recordValue.toString(),recordValue.getEventType().toString(),recordKey);
         } catch (Exception e) {
@@ -109,11 +116,13 @@ public class RideDFConsumerModule {
 
     @Incoming("incoming-payreceived")
     @Blocking
+//    public void receive(payrecvdpayloadrecord event) {
     public void receive_payrecvd(Record<Long, payrecvdpayloadrecord> event) {
         logger.info("Payload: {}", event);
         try {
             Long recordKey= event.key();
             payrecvdpayloadrecord recordValue = event.value();
+//            Long uid = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
             logger.info("Kafka decoded event UID: {}", recordKey);
             consumerService.publishEventtoDecodedTopic(recordValue.toString(),recordValue.getEventType().toString(),recordKey);
         } catch (Exception e) {
@@ -123,11 +132,13 @@ public class RideDFConsumerModule {
 
     @Incoming("incoming-reviewscheduled")
     @Blocking
+//    public void receive(reviewscheduledpayloadrecord event) {
     public void receive_revsched(Record<Long, reviewscheduledpayloadrecord> event) {
         logger.info("Payload: {}", event);
         try {
             Long recordKey= event.key();
             reviewscheduledpayloadrecord recordValue = event.value();
+//            Long uid = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
             logger.info("Kafka decoded event UID: {}", recordKey);
             consumerService.publishEventtoDecodedTopic(recordValue.toString(),recordValue.getEventType().toString(),recordKey);
         } catch (Exception e) {
