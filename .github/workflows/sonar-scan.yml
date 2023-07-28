@@ -39,6 +39,17 @@ jobs:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
+      - name: Authenticate and set context for dev get cluster ca
+        uses: redhat-actions/oc-login@v1.2
+        with:
+          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_URL_SILVER }}
+          openshift_token: ${{ secrets.OPENSHIFT_SA_PIPELINE_TOKEN_SILVER_DEV }}
+          namespace: "${{ secrets.OPENSHIFT_LICENSE_PLATE_SILVER }}-dev"
+      - name: Get Cluster ca secret for build
+        run: |
+          oc get secret ${{ secrets.CLUSTER_CA_SECRET_NAME }} -o jsonpath='{.data.ca\.p12}' | base64 -d -i > ca.p12
+          pwd
+          ls -a
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
