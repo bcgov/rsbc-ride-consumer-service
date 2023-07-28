@@ -65,7 +65,10 @@ jobs:
           PAYRECVD_EVENT_DECODED_TOPIC: ${{ secrets.PAYRECVD_EVENT_DECODED_TOPIC }}
           REVSCHED_EVENT_DECODED_TOPIC: ${{ secrets.REVSCHED_EVENT_DECODED_TOPIC }}
           TEST_EVENT_SINK_TOPIC: ${{ secrets.TEST_EVENT_SINK_TOPIC }}
-        run: ./gradlew build  sonar --info
+        run: |
+          cd src
+          chmod +x ./gradlew
+          ./gradlew build  sonar --info
       # - name: Run unit tests
       #   run: |
       #     cd rsbc-ride-geocoder-svc
