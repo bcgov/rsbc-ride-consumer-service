@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - release**
+      - patch/**
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
@@ -16,14 +17,15 @@ jobs:
   build:
     name: Build and analyze
     runs-on: ubuntu-latest
+    environment: pr
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: Set up JDK 17
+      - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
+          java-version: '11'
           distribution: 'temurin'
       - name: Cache SonarCloud packages
         uses: actions/cache@v3
@@ -31,20 +33,47 @@ jobs:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
-      - name: Cache Maven packages
+      - name: Cache Gradle packages
         uses: actions/cache@v3
         with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-      - name: Run unit tests
-        run: |
-          cd rsbc-ride-geocoder-svc
-          mvn clean compile test
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          cd rsbc-ride-geocoder-svc
-          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=bcgov_rsbc-ride-api-services -Pcoverage
+          APP_ACCEPTED_EVENT_TOPIC: ${{ secrets.APP_ACCEPTED_EVENT_TOPIC }}
+          PAYRECVD_EVENT_TOPIC: ${{ secrets.PAYRECVD_EVENT_TOPIC }}
+          REVSCHED_EVENT_TOPIC: ${{ secrets.REVSCHED_EVENT_TOPIC }}
+          TEST_EVENT_TOPIC: ${{ secrets.TEST_EVENT_TOPIC }}
+          DISCLOSURE_EVENT_TOPIC: ${{ secrets.DISCLOSURE_EVENT_TOPIC }}
+          EVSUBMITTED_EVENT_TOPIC: ${{ secrets.EVSUBMITTED_EVENT_TOPIC }}
+          KAFKA_SASL_CONFIG: ${{ secrets.KAFKA_SASL_CONFIG }}
+          KAFKA_SASL_MECH: ${{ secrets.KAFKA_SASL_MECH }}
+          KAFKA_SCHEMA_REGISTRY: ${{ secrets.KAFKA_SCHEMA_REGISTRY }}
+          KAFKA_SEC_PROTOCOL: ${{ secrets.KAFKA_SEC_PROTOCOL }}
+          KAFKA_SERVER: ${{ secrets.KAFKA_SERVER }}
+          SSL_PROTOCOL: ${{ secrets.SSL_PROTOCOL }}
+          SSL_TRUSTSTORE: ${{ secrets.SSL_TRUSTSTORE }}
+          SSL_TRUSTTORE_PASS: ${{ secrets.SSL_TRUSTTORE_PASS }}
+          SSL_TRUSTTORE_TYPE: ${{ secrets.SSL_TRUSTTORE_TYPE }}
+          KAFKA_CONFLUENT_COMPAT_REGISTRY: ${{ secrets.KAFKA_CONFLUENT_COMPAT_REGISTRY }}
+          APP_ACCEPTED_EVENT_DECODED_TOPIC: ${{ secrets.APP_ACCEPTED_EVENT_DECODED_TOPIC }}
+          DISCLOSURE_EVENT_DECODED_TOPIC: ${{ secrets.DISCLOSURE_EVENT_DECODED_TOPIC }}
+          EVSUBMITTED_EVENT_DECODED_TOPIC: ${{ secrets.EVSUBMITTED_EVENT_DECODED_TOPIC }}
+          PAYRECVD_EVENT_DECODED_TOPIC: ${{ secrets.PAYRECVD_EVENT_DECODED_TOPIC }}
+          REVSCHED_EVENT_DECODED_TOPIC: ${{ secrets.REVSCHED_EVENT_DECODED_TOPIC }}
+          TEST_EVENT_SINK_TOPIC: ${{ secrets.TEST_EVENT_SINK_TOPIC }}
+        run: ./gradlew build  sonar --info
+      # - name: Run unit tests
+      #   run: |
+      #     cd rsbc-ride-geocoder-svc
+      #     mvn clean compile test
+      # - name: Build and analyze
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #   run: |
+      #     cd rsbc-ride-geocoder-svc
+      #     mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=bcgov_rsbc-ride-api-services -Pcoverage
