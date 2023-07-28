@@ -128,12 +128,6 @@ jobs:
         if: always()
         run: |
           cat trivy_updated.html >> $GITHUB_STEP_SUMMARY   
-      # - uses: mshick/add-pr-comment@v2
-      #   if: always()
-      #   with:
-      #     allow-repeats: true
-      #     message-path: |
-      #       trivy_updated.html
       - name: Post SARIF findings in the issue
         uses: sett-and-hive/sarif-to-issue-action@v1
         if: failure()
