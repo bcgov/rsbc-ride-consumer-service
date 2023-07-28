@@ -79,15 +79,4 @@ jobs:
         run: |
           cd src
           chmod +x ./gradlew
-          ./gradlew build  sonar --info
-      # - name: Run unit tests
-      #   run: |
-      #     cd rsbc-ride-geocoder-svc
-      #     mvn clean compile test
-      # - name: Build and analyze
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #   run: |
-      #     cd rsbc-ride-geocoder-svc
-      #     mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=bcgov_rsbc-ride-api-services -Pcoverage
+          ./gradlew build  sonar --info --stacktrace

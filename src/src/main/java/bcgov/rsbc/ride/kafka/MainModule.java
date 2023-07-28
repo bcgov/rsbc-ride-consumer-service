@@ -35,7 +35,6 @@ public class MainModule {
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/")
     public String pingservice() {
-        logger.info("ping service called");
         return "pong from consumer service";
 
     }
