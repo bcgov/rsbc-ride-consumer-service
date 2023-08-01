@@ -5,6 +5,38 @@ networks:
     driver: bridge
 
 services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:29092
+      - 9092:9092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
+      KAFKA_SASL_JAAS_CONFIG: "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"kafka\" password=\"kafka-secret\";"
+  kouncil-platform:
+    image: consdata/kouncil@sha256:f3993c0c05031564c69051243f78d059d1c1b4944ea42ec1f0ce8a4a94ae56d4
+    ports:
+      - 8086:8080
+    volumes:
+      - type: bind
+        source: ./local_run/kouncil/config
+        target: /config/
   consumerservice:
     build:
       context: src
@@ -20,7 +52,7 @@ services:
         - KAFKA_SASL_MECH=""
         - KAFKA_SCHEMA_REGISTRY=""
         - KAFKA_SEC_PROTOCOL="SASL_SSL"
-        - KAFKA_SERVER=""
+        - KAFKA_SERVER="kafka:9092"
         - SSL_PROTOCOL="TLS"
         - SSL_TRUSTSTORE=""
         - SSL_TRUSTTORE_PASS=""

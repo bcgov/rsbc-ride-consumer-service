@@ -1,0 +1,16 @@
+kouncil:
+  clusters:
+    - name: ride-kafka-cluster-local
+      kafka:
+        security:
+          protocol: PLAINTEXT
+      brokers:
+        - host: kafka
+          port: 29092
+    - name: ride-kafka-cluster-local-2
+      kafka:
+        security:
+          protocol: PLAINTEXT
+      brokers:
+        - host: kafka
+          port: 9092

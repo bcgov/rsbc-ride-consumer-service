@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  kouncil-platform:
+    image: consdata/kouncil@sha256:f3993c0c05031564c69051243f78d059d1c1b4944ea42ec1f0ce8a4a94ae56d4
+    ports:
+      - 80:8080
+    volumes:
+      - type: bind
+        source: ./config
+        target: /config/
