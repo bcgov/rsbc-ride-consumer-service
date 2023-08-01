@@ -1,0 +1,47 @@
+version: '3.8'
+ 
+networks:
+  consumer-network:
+    driver: bridge
+
+services:
+  consumerservice:
+    build:
+      context: src
+      dockerfile: Dockerfile-local.multistage
+      args:
+        - APP_ACCEPTED_EVENT_TOPIC=""
+        - PAYRECVD_EVENT_TOPIC=""
+        - REVSCHED_EVENT_TOPIC=""
+        - TEST_EVENT_TOPIC=""
+        - DISCLOSURE_EVENT_TOPIC=""
+        - EVSUBMITTED_EVENT_TOPIC=""
+        - KAFKA_SASL_CONFIG=""
+        - KAFKA_SASL_MECH=""
+        - KAFKA_SCHEMA_REGISTRY=""
+        - KAFKA_SEC_PROTOCOL="SASL_SSL"
+        - KAFKA_SERVER=""
+        - SSL_PROTOCOL="TLS"
+        - SSL_TRUSTSTORE=""
+        - SSL_TRUSTTORE_PASS=""
+        - SSL_TRUSTTORE_TYPE=""
+        - KAFKA_CONFLUENT_COMPAT_REGISTRY=""
+        - CLUSTER_CA_SECRET_NAME=""
+        - APP_ACCEPTED_EVENT_DECODED_TOPIC=""
+        - DISCLOSURE_EVENT_DECODED_TOPIC=""
+        - EVSUBMITTED_EVENT_DECODED_TOPIC=""
+        - PAYRECVD_EVENT_DECODED_TOPIC=""
+        - REVSCHED_EVENT_DECODED_TOPIC=""
+        - TEST_EVENT_SINK_TOPIC=""
+        - ISSUANCE_EVENT_TOPIC=""
+        - PAYMENT_EVENT_TOPIC=""
+        - DISPUTE_EVENT_TOPIC=""
+        - DISPUTE_UPDATE_EVENT_TOPIC=""
+        - VIOLATIONS_EVENT_TOPIC=""
+        - PAYQUERY_EVENT_TOPIC=""
+        - RECON_SVC_HOST=""
+    env_file:
+      - .env
+    container_name: consumerservice
+    ports:
+      - 8080:8080
