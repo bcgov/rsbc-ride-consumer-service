@@ -1,0 +1,47 @@
+{
+  "name": "DisputeData",
+  "type": "record",
+  "namespace": "bcgov.rsbc.ride.kafka.models",
+  "fields": [
+    {
+      "name": "event_type",
+      "type": "string"
+    },
+    {
+      "name": "Dispute",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "DisputeRecord",
+          "fields": [
+            {
+              "name": "ticket_number",
+              "type": "string"
+            },
+            {
+              "name": "count_number",
+              "type": "float"
+            },
+            {
+              "name": "dispute_action_date",
+              "type": "string"
+            },
+            {
+              "name": "dispute_type_code",
+              "type": "string"
+            },
+            {
+              "name": "count_act_regulation",
+              "type": "string"
+            },
+            {
+              "name": "compressed_section",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

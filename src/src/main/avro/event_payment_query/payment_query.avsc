@@ -1,0 +1,27 @@
+{
+  "name": "PaymentQueryData",
+  "type": "record",
+  "namespace": "bcgov.rsbc.ride.kafka.models",
+  "fields": [
+    {
+      "name": "event_type",
+      "type": "string"
+    },
+    {
+      "name": "PaymentQuery",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "PaymentQueryRecord",
+          "fields": [
+            {
+              "name": "ticket_number",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "name": "ViolationData",
+  "type": "record",
+  "namespace": "bcgov.rsbc.ride.kafka.models",
+  "fields": [
+    {
+      "name": "event_type",
+      "type": "string"
+    },
+    {
+      "name": "Violation",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "ViolationRecord",
+          "fields": [
+            {
+              "name": "ticket_number",
+              "type": "string"
+            },
+            {
+              "name": "count_number",
+              "type": "float"
+            },
+            {
+              "name": "act_code",
+              "type": "string"
+            },
+            {
+              "name": "section_text",
+              "type": "string"
+            },
+            {
+              "name": "section_desc",
+              "type": "string"
+            },
+            {
+              "name": "fine_amount",
+              "type": "string"
+            },
+            {
+              "name": "wording_number",
+              "type": "float"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "name": "PaymentData",
+  "type": "record",
+  "namespace": "bcgov.rsbc.ride.kafka.models",
+  "fields": [
+    {
+      "name": "event_type",
+      "type": "string"
+    },
+    {
+      "name": "Payment",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "PaymentRecord",
+          "fields": [
+            {
+              "name": "ticket_number",
+              "type": "string"
+            },
+            {
+              "name": "count_number",
+              "type": "float"
+            },
+            {
+              "name": "payment_card_type",
+              "type": "string"
+            },
+            {
+              "name": "payment_ticket_type_code",
+              "type": "string"
+            },
+            {
+              "name": "payment_amount",
+              "type": "float"
+            },
+            {
+              "name": "transaction_id",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
