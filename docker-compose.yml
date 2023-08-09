@@ -26,9 +26,9 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_SASL_ENABLED_MECHANISMS: PLAIN
-      KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
-      KAFKA_SASL_JAAS_CONFIG: "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"kafka\" password=\"kafka-secret\";"
+      # KAFKA_SASL_ENABLED_MECHANISMS: PLAIN
+      # KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
+      # KAFKA_SASL_JAAS_CONFIG: "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"kafka\" password=\"kafka-secret\";"
   kouncil-platform:
     image: consdata/kouncil@sha256:f3993c0c05031564c69051243f78d059d1c1b4944ea42ec1f0ce8a4a94ae56d4
     ports:
@@ -40,7 +40,7 @@ services:
   consumerservice:
     build:
       context: src
-      dockerfile: Dockerfile-local.multistage
+      dockerfile: Dockerfile-local.jvm
       args:
         - APP_ACCEPTED_EVENT_TOPIC=""
         - PAYRECVD_EVENT_TOPIC=""
@@ -51,9 +51,9 @@ services:
         - KAFKA_SASL_CONFIG=""
         - KAFKA_SASL_MECH=""
         - KAFKA_SCHEMA_REGISTRY=""
-        - KAFKA_SEC_PROTOCOL="SASL_SSL"
-        - KAFKA_SERVER="kafka:9092"
-        - SSL_PROTOCOL="TLS"
+        - KAFKA_SEC_PROTOCOL="PLAINTEXT"
+        - KAFKA_SERVER="kafka:29092"
+        - SSL_PROTOCOL=""
         - SSL_TRUSTSTORE=""
         - SSL_TRUSTTORE_PASS=""
         - SSL_TRUSTTORE_TYPE=""
@@ -77,3 +77,7 @@ services:
     container_name: consumerservice
     ports:
       - 8080:8080
+    # network_mode: host
+    depends_on:
+      - kafka
+      - kouncil-platform
