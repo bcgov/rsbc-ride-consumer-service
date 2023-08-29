@@ -82,10 +82,6 @@ dependencies {
     implementation 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.18.0-alpha'
     implementation 'io.quarkus:quarkus-micrometer-registry-prometheus'
     implementation 'io.quarkus:quarkus-opentelemetry-exporter-otlp'
-
-    // security fixes
-    implementation 'org.scala-lang:scala-library:2.13.9'
-    implementation 'org.yaml:snakeyaml:2.0'
 }
 
 group 'bcgov.rsbc.ride.kafka'
