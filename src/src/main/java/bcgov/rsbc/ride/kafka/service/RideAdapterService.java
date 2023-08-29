@@ -31,9 +31,16 @@ public class RideAdapterService {
         String payload = getPayload(persistenceObject, tableName);
         logger.info("Calling Ride DB Adapter API with payload: " + payload);
 
-        return webClient.post(PORT, HOST, "/upsertdata")
+         return webClient.post(PORT, HOST, "/upsertdata")
                 .putHeader("Content-Type", "application/json")
-                .sendJson(payload).toCompletionStage().toCompletableFuture();
+                .sendJson(payload).toCompletionStage().thenApply(resp -> {
+                    if (resp.statusCode() != 200) {
+                        logger.error("Error calling Ride DB Adapter API: " + resp.statusCode() + " " + resp.statusMessage());
+                        return null;
+                    }
+                    logger.info("Persistence Issuance finished.");
+                    return resp;
+                });
     }
 
     private String getPayload(Object persistenceObject, String tableName) {

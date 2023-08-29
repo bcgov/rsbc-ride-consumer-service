@@ -37,8 +37,8 @@ public class GeolocationEvent implements EtkEventHandler<IssuanceRecord, Geoloca
 
     @Override
     public void execute(GeolocationRequest event) {
+        logger.info("GeolocationRequest Event received: " + event);
         geocoderService.callGeocoderApi(event).thenAccept(geoloc ->
                 rideAdapterService.sendData(geoloc, "gis.geolocations"));
-        logger.info("GeolocationRequest Event received: " + event);
     }
 }

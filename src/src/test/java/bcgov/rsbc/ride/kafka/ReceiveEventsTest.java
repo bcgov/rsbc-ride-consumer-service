@@ -5,6 +5,7 @@ import bcgov.rsbc.ride.kafka.service.EtkConsumerService;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import io.quarkus.test.junit.QuarkusTest;
+import io.smallrye.reactive.messaging.kafka.KafkaConsumer;
 import io.smallrye.reactive.messaging.kafka.Record;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
@@ -30,6 +31,9 @@ public class ReceiveEventsTest {
     RideEtkConsumer rideEtkConsumer;
 
     @Mock
+    KafkaConsumer<Long, String> kafkaConsumer;
+
+    @Mock
     EtkConsumerService etkConsumerService;
 
     WireMockServer wireMockServer;
@@ -37,8 +41,8 @@ public class ReceiveEventsTest {
     @BeforeEach
     public void init() {
         MockitoAnnotations.initMocks(this);
-        WireMock.configureFor("localhost", 8082);
-        wireMockServer = new WireMockServer(8082);
+        WireMock.configureFor("localhost", 9092);
+        wireMockServer = new WireMockServer(9092);
         wireMockServer.start();
     }
 
