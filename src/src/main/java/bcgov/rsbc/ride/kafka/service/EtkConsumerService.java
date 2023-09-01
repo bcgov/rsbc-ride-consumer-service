@@ -25,7 +25,7 @@ public class EtkConsumerService {
             logger.debug("Payload: " + event);
             logger.debug("Type of event: " + event.getClass());
             EtkEventHandler<S, T> handler = etkEventsFactory.getHadlerByEventType(eventType);
-            T evt = handler.mapperEvent(inputType);
+            T evt = handler.map(inputType);
             logger.info("Kafka decoded event UID: " + recordKey);
             handler.execute(evt);
             eventStatus=true;

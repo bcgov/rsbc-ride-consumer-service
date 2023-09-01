@@ -6,14 +6,16 @@ import bcgov.rsbc.ride.kafka.models.IssuanceRecord;
 import bcgov.rsbc.ride.kafka.service.GeocoderService;
 import bcgov.rsbc.ride.kafka.service.RideAdapterService;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @ApplicationScoped
-public class GeolocationEvent implements EtkEventHandler<IssuanceRecord, GeolocationRequest>{
+public class GeolocationEvent extends EtkEventHandler<IssuanceRecord, GeolocationRequest>{
 
     private static final Logger logger = Logger.getLogger(GeolocationEvent.class);
 
@@ -23,11 +25,11 @@ public class GeolocationEvent implements EtkEventHandler<IssuanceRecord, Geoloca
     @Inject
     GeocoderService geocoderService;
 
-    @Override
-    public List<Class<GeolocationRequest>> getEventTypeToHandler() { return List.of(GeolocationRequest.class); }
+    @ConfigProperty(name = "ride.adapter.primarykey.geolocation")
+    Optional<List<String>> primaryKey;
 
     @Override
-    public GeolocationRequest mapperEvent(IssuanceRecord issuanceRecord) {
+    protected GeolocationRequest mapEvent(IssuanceRecord issuanceRecord) {
         return GeolocationRequest.builder()
                 .businessId(issuanceRecord.getTicketNumber())
                 .violationHighwayDesc(issuanceRecord.getViolationHighwayDesc())
@@ -39,6 +41,6 @@ public class GeolocationEvent implements EtkEventHandler<IssuanceRecord, Geoloca
     public void execute(GeolocationRequest event) {
         logger.info("GeolocationRequest Event received: " + event);
         geocoderService.callGeocoderApi(event).thenAccept(geoloc ->
-                rideAdapterService.sendData(geoloc, "gis.geolocations"));
+                rideAdapterService.sendData(geoloc, "gis.geolocations", primaryKey.orElse(null)));
     }
 }

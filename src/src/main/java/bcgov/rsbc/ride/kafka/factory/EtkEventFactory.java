@@ -13,10 +13,8 @@ public class EtkEventFactory {
 
     EtkEventFactory(List<EtkEventHandler> eventTypeHandlers) {
         for (EtkEventHandler event : eventTypeHandlers) {
-            List<Class<Object>> eventTypeList = event.getEventTypeToHandler();
-            for (Class<Object> eventType: eventTypeList) {
-                handlerMap.put(eventType, event);
-            }
+            Class<Object> eventType = event.getEventsSubscribed();
+            handlerMap.put(eventType, event);
         }
     }
 
