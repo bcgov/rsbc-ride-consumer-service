@@ -1,0 +1,163 @@
+{
+  "name": "IssuanceData",
+  "type": "record",
+  "namespace": "bcgov.rsbc.ride.kafka.models",
+  "fields": [
+    {
+      "name": "event_type",
+      "type": "string"
+    },
+    {
+      "name": "Issuance",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "IssuanceRecord",
+          "fields": [
+            {
+              "name": "submit_date",
+              "type": "string"
+            },
+            {
+              "name": "sent_time",
+              "type": "string"
+            },
+            {
+              "name": "ticket_number",
+              "type": "string"
+            },
+            {
+              "name": "drivers_licence_province_code",
+              "type": "string"
+            },
+            {
+              "name": "person_gender_code",
+              "type": "string"
+            },
+            {
+              "name": "person_residence_city_name",
+              "type": "string"
+            },
+            {
+              "name": "person_residence_province_code",
+              "type": "string"
+            },
+            {
+              "name": "young_person_yn",
+              "type": "string"
+            },
+            {
+              "name": "offender_type_code",
+              "type": "string"
+            },
+            {
+              "name": "violation_date",
+              "type": "string"
+            },
+            {
+              "name": "violation_time",
+              "type": "string"
+            },
+            {
+              "name": "violation_highway_desc",
+              "type": "string"
+            },
+            {
+              "name": "violation_city_code",
+              "type": "string"
+            },
+            {
+              "name": "violation_city_name",
+              "type": "string"
+            },
+            {
+              "name": "vehicle_province_code",
+              "type": "string"
+            },
+            {
+              "name": "vehicle_nsj_puj_cd",
+              "type": "string"
+            },
+            {
+              "name": "vehicle_make_code",
+              "type": "string"
+            },
+            {
+              "name": "vehicle_type_code",
+              "type": "string"
+            },
+            {
+              "name": "vehicle_year",
+              "type": "string"
+            },
+            {
+              "name": "accident_yn",
+              "type": "string"
+            },
+            {
+              "name": "dispute_address_text",
+              "type": "string"
+            },
+            {
+              "name": "court_location_code",
+              "type": "string"
+            },
+            {
+              "name": "mre_agency_text",
+              "type": "string"
+            },
+            {
+              "name": "enforcement_jurisdiction_code",
+              "type": "string"
+            },
+            {
+              "name": "certificate_of_service_date",
+              "type": "string"
+            },
+            {
+              "name": "certificate_of_service_number",
+              "type": "string"
+            },
+            {
+              "name": "e_violation_form_number",
+              "type": "string"
+            },
+            {
+              "name": "enforcement_jurisdiction_name",
+              "type": "string"
+            },
+            {
+              "name": "mre_minor_version_text",
+              "type": "string"
+            },
+            {
+              "name": "count_quantity",
+              "type": "string"
+            },
+            {
+              "name": "enforcement_officer_number",
+              "type": "string"
+            },
+            {
+              "name": "enforcement_officer_name",
+              "type": "string"
+            },
+            {
+              "name": "sent_date",
+              "type": "string"
+            },
+            {
+              "name": "enforcement_org_unit_cd",
+              "type": "string"
+            },
+            {
+              "name": "enforcement_org_unit_cd_txt",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

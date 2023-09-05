@@ -1,38 +1,32 @@
 package bcgov.rsbc.ride.kafka;
 
+import bcgov.rsbc.ride.kafka.models.*;
+import io.opentelemetry.api.GlobalOpenTelemetry;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.Tracer;
+import io.opentelemetry.context.Scope;
 import io.smallrye.reactive.messaging.annotations.Blocking;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import io.smallrye.reactive.messaging.kafka.Record;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jboss.logging.Logger;
+import javax.enterprise.context.control.ActivateRequestContext;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.LinkedHashMap;
-import java.util.Set;
-
-
-import bcgov.rsbc.ride.kafka.models.evtissuanceeevent;
-import bcgov.rsbc.ride.kafka.models.evtpaymenteevent;
-import bcgov.rsbc.ride.kafka.models.evtdisputeevent;
-import bcgov.rsbc.ride.kafka.models.evtdisputeupdateevent;
-import bcgov.rsbc.ride.kafka.models.evtpaymentqueryeevent;
-import bcgov.rsbc.ride.kafka.models.evtcontraventionseevent;
-
-import bcgov.rsbc.ride.kafka.service.etkConsumerService;
-
-
+import bcgov.rsbc.ride.kafka.service.EtkConsumerService;
 
 @Path("/consumeetk")
+@ActivateRequestContext
 public class RideEtkConsumer {
-    private final static Logger logger = LoggerFactory.getLogger(RideEtkConsumer.class);
+    private static final Logger logger = Logger.getLogger(RideEtkConsumer.class);
 
+    private final Tracer tracer = GlobalOpenTelemetry.getTracer(
+            RideEtkConsumer.class.getName(), "1.0.0");
+
+    @Inject
+    private EtkConsumerService etkConsumerService;
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
@@ -45,89 +39,116 @@ public class RideEtkConsumer {
     // Monitors the incoming-issuance topic
     @Incoming("incoming-issuance")
     @Blocking
-    public void receive(Record<Long, String> event) {
-        try {
-            String eventType="issuance";
-            // Read the events from Kafka and send to the Process events method
-            boolean eventStatus=etkConsumerService.processEtkEvents(event,eventType);
-            if(eventStatus==false){
+    public Boolean receive(Record<Long, String> event) {
+        Span span = tracer.spanBuilder("RideEtkConsumer.receive.incoming-issuance").startSpan();
+        boolean eventStatus = false;
+        try (Scope scope = span.makeCurrent()){
+            String recordValue = event.value().substring(5);
+            eventStatus=etkConsumerService.processEtkEvents(event, recordValue,IssuanceRecord.class);
+            if(!eventStatus){
                 throw new Exception("error in processing event");
             }
 
         } catch (Exception e) {
-            logger.error("Exception occurred while reading decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
+            logger.error("Exception occurred while reading decoded event, exception details: " + e + "; " + e.getMessage());
+        } finally {
+            span.end();
         }
+        return eventStatus;
     }
 
     @Incoming("incoming-payment")
     @Blocking
-    public void receive_payment(Record<Long, String> event) {
-        try {
-            String eventType="payment";
-            boolean eventStatus=etkConsumerService.processEtkEvents(event,eventType);
-            if(eventStatus==false){
+    public Boolean receive_payment(Record<Long, String> event) {
+        Span span = tracer.spanBuilder("RideEtkConsumer.receive_payment.incoming-payment").startSpan();
+        boolean eventStatus = false;
+        try (Scope scope = span.makeCurrent()){
+            String recordValue = event.value().substring(5);
+            eventStatus=etkConsumerService.processEtkEvents(event, recordValue, PaymentRecord.class);
+            if(!eventStatus){
                 throw new Exception("error in processing event");
             }
         } catch (Exception e) {
-            logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
+            logger.error("Exception occurred while sending decoded event, exception details: " + e + "; " + e.getMessage());
+        } finally {
+            span.end();
         }
+        return eventStatus;
     }
 
     @Incoming("incoming-dispute")
     @Blocking
-    public void receive_dispute(Record<Long, String> event) {
-        try {
-            String eventType="dispute";
-            boolean eventStatus=etkConsumerService.processEtkEvents(event,eventType);
-            if(eventStatus==false){
+    public Boolean receive_dispute(Record<Long, String> event) {
+        Span span = tracer.spanBuilder("RideEtkConsumer.receive_dispute.incoming-dispute").startSpan();
+        boolean eventStatus = false;
+        try (Scope scope = span.makeCurrent()){
+            String recordValue = event.value().substring(5);
+            eventStatus=etkConsumerService.processEtkEvents(event, recordValue, DisputeRecord.class);
+            if(!eventStatus){
                 throw new Exception("error in processing event");
             }
         } catch (Exception e) {
-            logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
+            logger.error("Exception occurred while sending decoded event, exception details: " + e + "; " + e.getMessage());
+        } finally {
+            span.end();
         }
+        return eventStatus;
     }
 
     @Incoming("incoming-disputeupdate")
     @Blocking
-    public void receive_disputeupdate(Record<Long, String> event) {
-        try {
-            String eventType="disputeupdate";
-            boolean eventStatus=etkConsumerService.processEtkEvents(event,eventType);
-            if(eventStatus==false){
+    public Boolean receive_disputeupdate(Record<Long, String> event) {
+        Span span = tracer.spanBuilder("RideEtkConsumer.receive_disputeupdate.incoming-disputeupdate").startSpan();
+        boolean eventStatus = false;
+        try (Scope scope = span.makeCurrent()){
+            String recordValue = event.value().substring(5);
+            eventStatus=etkConsumerService.processEtkEvents(event, recordValue, DisputeUpdateRecord.class);
+            if(!eventStatus){
                 throw new Exception("error in processing event");
             }
         } catch (Exception e) {
-            logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
+            logger.error("Exception occurred while sending decoded event, exception details: " + e + "; " + e.getMessage());
+        } finally {
+            span.end();
         }
+        return eventStatus;
     }
 
     @Incoming("incoming-violations")
     @Blocking
-    public void receive_violations(Record<Long, String> event) {
-        try {
-            String eventType="violations";
-            boolean eventStatus=etkConsumerService.processEtkEvents(event,eventType);
-            if(eventStatus==false){
+    public Boolean receive_violations(Record<Long, String> event) {
+        Span span = tracer.spanBuilder("RideEtkConsumer.receive_violations.incoming-violations").startSpan();
+        boolean eventStatus = false;
+        try (Scope scope = span.makeCurrent()){
+            String recordValue = event.value().substring(5);
+            eventStatus=etkConsumerService.processEtkEvents(event, recordValue, ViolationRecord.class);
+            if(!eventStatus){
                 throw new Exception("error in processing event");
             }
         } catch (Exception e) {
-            logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
+            logger.error("Exception occurred while sending decoded event, exception details: " + e + "; " + e.getMessage());
+        } finally {
+            span.end();
         }
+        return eventStatus;
     }
 
     @Incoming("incoming-payquery")
     @Blocking
-    public void receive_payquery(Record<Long, String> event) {
-        try {
-            String eventType="paymentquery";
-            boolean eventStatus=etkConsumerService.processEtkEvents(event,eventType);
-            if(eventStatus==false){
+    public Boolean receive_payquery(Record<Long, String> event) {
+        Span span = tracer.spanBuilder("RideEtkConsumer.receive_payquery.incoming-payquery").startSpan();
+        boolean eventStatus = false;
+        try (Scope scope = span.makeCurrent()){
+            String recordValue = event.value().substring(5);
+            eventStatus=etkConsumerService.processEtkEvents(event, recordValue, PaymentQueryRecord.class);
+            if(!eventStatus){
                 throw new Exception("error in processing event");
             }
         } catch (Exception e) {
-            logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
+            logger.error("Exception occurred while sending decoded event, exception details: " + e + "; " + e.getMessage());
+        } finally {
+            span.end();
         }
+        return eventStatus;
     }
-
-
 }
