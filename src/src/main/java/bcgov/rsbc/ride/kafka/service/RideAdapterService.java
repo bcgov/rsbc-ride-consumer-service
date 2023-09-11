@@ -52,7 +52,7 @@ public class RideAdapterService {
         jsonObject.put("data", persistenceObject);
         jsonObject.put("source", "etk_consumer");
         if (primaryKey != null) {
-            jsonObject.put("primarykey", primaryKey);
+            jsonObject.put("primarykeys", primaryKey);
         }
         return jsonObject.toJSONString();
     }
