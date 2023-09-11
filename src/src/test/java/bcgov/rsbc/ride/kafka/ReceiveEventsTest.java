@@ -7,6 +7,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.smallrye.reactive.messaging.kafka.KafkaConsumer;
 import io.smallrye.reactive.messaging.kafka.Record;
+import org.codehaus.plexus.util.dag.Vertex;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +36,9 @@ public class ReceiveEventsTest {
 
     @Mock
     EtkConsumerService etkConsumerService;
+
+    @Mock
+    Vertex vertex;
 
     WireMockServer wireMockServer;
 

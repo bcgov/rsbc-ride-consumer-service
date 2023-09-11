@@ -20,10 +20,10 @@ public class GeolocationEvent extends EtkEventHandler<IssuanceRecord, Geolocatio
     private static final Logger logger = Logger.getLogger(GeolocationEvent.class);
 
     @Inject
-    RideAdapterService rideAdapterService;
+    GeocoderService geocoderService;
 
     @Inject
-    GeocoderService geocoderService;
+    RideAdapterService rideAdapterService;
 
     @ConfigProperty(name = "ride.adapter.primarykey.geolocation")
     Optional<List<String>> primaryKey;
@@ -40,7 +40,8 @@ public class GeolocationEvent extends EtkEventHandler<IssuanceRecord, Geolocatio
     @Override
     public void execute(GeolocationRequest event) {
         logger.info("GeolocationRequest Event received: " + event);
+
         geocoderService.callGeocoderApi(event).thenAccept(geoloc ->
-                rideAdapterService.sendData(geoloc, "gis.geolocations", primaryKey.orElse(null)));
+                rideAdapterService.sendData(List.of(geoloc),"gis", "geolocations", primaryKey.orElse(null)));
     }
 }

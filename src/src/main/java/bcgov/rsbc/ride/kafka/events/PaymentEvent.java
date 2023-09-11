@@ -26,6 +26,6 @@ public class PaymentEvent extends EtkEventHandler<String, PaymentRecord>{
     @Override
     public void execute(PaymentRecord event) {
         logger.info("Payment Event received: " + event);
-        rideAdapterService.sendData(event, "etk.payments", primaryKey.orElse(null));
+        rideAdapterService.sendData(List.of(event), "etk", "payments", primaryKey.orElse(null));
     }
 }
