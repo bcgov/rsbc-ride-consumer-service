@@ -179,8 +179,8 @@ jobs:
       VIOLATIONS_EVENT_TOPIC: ${{ secrets.VIOLATIONS_EVENT_TOPIC }}
       PAYQUERY_EVENT_TOPIC: ${{ secrets.PAYQUERY_EVENT_TOPIC }}
       RECON_SVC_HOST: ${{ secrets.RECON_SVC_HOST }}
-      RECON_PORT: ""
-      RECON_HOST: ""
+      RECON_PORT: "5000"
+      RECON_HOST: "localhost"
 
 
     steps:
