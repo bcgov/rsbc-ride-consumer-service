@@ -10,6 +10,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
+import bcgov.rsbc.ride.kafka.service.ReconService;
 
 @Slf4j
 @ApplicationScoped
@@ -23,13 +24,17 @@ public class IssuanceEvent extends EtkEventHandler<String,IssuanceRecord> {
     @Inject
     GeolocationEvent geolocationEvent;
 
+    @Inject
+    ReconService reconService;
+
     @ConfigProperty(name = "ride.adapter.primarykey.issuance")
     Optional<List<String>> primaryKey;
 
     @Override
-    public void execute(IssuanceRecord event) {
+    public void execute(IssuanceRecord event, String key) {
         logger.info("Issuance Event received: " + event);
+        reconService.updateMainStagingStatus(key,"consumer_process");
         rideAdapterService.sendData(List.of(event), "etk", "issuances", primaryKey.orElse(null))
-                .thenRun(() -> geolocationEvent.execute(geolocationEvent.map(event)));
+                .thenRun(() -> geolocationEvent.execute(geolocationEvent.map(event),key));
     }
 }

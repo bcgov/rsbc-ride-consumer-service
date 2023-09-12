@@ -10,6 +10,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
+import bcgov.rsbc.ride.kafka.service.ReconService;
 
 @Slf4j
 @ApplicationScoped
@@ -20,12 +21,16 @@ public class PaymentEvent extends EtkEventHandler<String, PaymentRecord>{
     @Inject
     RideAdapterService rideAdapterService;
 
+    @Inject
+    ReconService reconService;
+
     @ConfigProperty(name = "ride.adapter.primarykey.payment")
     Optional<List<String>> primaryKey;
 
     @Override
-    public void execute(PaymentRecord event) {
+    public void execute(PaymentRecord event, String key) {
         logger.info("Payment Event received: " + event);
+        reconService.updateMainStagingStatus(key,"consumer_process");
         rideAdapterService.sendData(List.of(event), "etk", "payments", primaryKey.orElse(null));
     }
 }
