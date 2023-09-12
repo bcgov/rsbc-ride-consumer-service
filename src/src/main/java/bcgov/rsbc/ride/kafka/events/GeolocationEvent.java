@@ -12,6 +12,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
+import bcgov.rsbc.ride.kafka.service.ReconService;
 
 @Slf4j
 @ApplicationScoped
@@ -24,6 +25,9 @@ public class GeolocationEvent extends EtkEventHandler<IssuanceRecord, Geolocatio
 
     @Inject
     RideAdapterService rideAdapterService;
+
+    @Inject
+    ReconService reconService;
 
     @ConfigProperty(name = "ride.adapter.primarykey.geolocation")
     Optional<List<String>> primaryKey;
@@ -38,9 +42,9 @@ public class GeolocationEvent extends EtkEventHandler<IssuanceRecord, Geolocatio
     }
 
     @Override
-    public void execute(GeolocationRequest event) {
+    public void execute(GeolocationRequest event,String key) {
         logger.info("GeolocationRequest Event received: " + event);
-
+        reconService.updateMainStagingStatus(key,"consumer_process");
         geocoderService.callGeocoderApi(event).thenAccept(geoloc ->
                 rideAdapterService.sendData(List.of(geoloc),"gis", "geolocations", primaryKey.orElse(null)));
     }

@@ -43,6 +43,8 @@ jobs:
       VIOLATIONS_EVENT_TOPIC: ${{ secrets.VIOLATIONS_EVENT_TOPIC }}
       PAYQUERY_EVENT_TOPIC: ${{ secrets.PAYQUERY_EVENT_TOPIC }}
       RECON_SVC_HOST: ${{ secrets.RECON_SVC_HOST }}
+      RECON_PORT: ""
+      RECON_HOST: ""
 
 
     steps:
@@ -144,6 +146,8 @@ jobs:
               VIOLATIONS_EVENT_TOPIC: ""
               PAYQUERY_EVENT_TOPIC: ""
               RECON_SVC_HOST: ""
+              RECON_PORT: ""
+              RECON_HOST: ""
 
   deploy_prod_argocd:
     name: Push to Gitops repo for prod deployment via Argocd

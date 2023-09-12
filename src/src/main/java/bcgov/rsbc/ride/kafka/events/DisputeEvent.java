@@ -10,6 +10,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
+import bcgov.rsbc.ride.kafka.service.ReconService;
+
 
 @Slf4j
 @ApplicationScoped
@@ -20,12 +22,16 @@ public class DisputeEvent extends EtkEventHandler<String, DisputeRecord> {
     @Inject
     RideAdapterService rideAdapterService;
 
+    @Inject
+    ReconService reconService;
+
     @ConfigProperty(name = "ride.adapter.primarykey.dispute")
     Optional<List<String>> primaryKey;
 
     @Override
-    public void execute(DisputeRecord event) {
+    public void execute(DisputeRecord event, String key) {
         logger.info("Dispute Event received: " + event);
+        reconService.updateMainStagingStatus(key,"consumer_process");
         rideAdapterService.sendData(List.of(event), "etk","disputes", primaryKey.orElse(null));
     }
 }
