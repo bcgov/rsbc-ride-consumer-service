@@ -26,6 +26,6 @@ public class ViolationEvent extends EtkEventHandler<String, ViolationRecord>{
     @Override
     public void execute(ViolationRecord event) {
         logger.info("Violation Event received: " + event);
-        rideAdapterService.sendData(event, "etk.violations", primaryKey.orElse(null));
+        rideAdapterService.sendData(List.of(event), "etk", "violations", primaryKey.orElse(null));
     }
 }

@@ -26,6 +26,6 @@ public class DisputeEvent extends EtkEventHandler<String, DisputeRecord> {
     @Override
     public void execute(DisputeRecord event) {
         logger.info("Dispute Event received: " + event);
-        rideAdapterService.sendData(event, "etks.disputes", primaryKey.orElse(null));
+        rideAdapterService.sendData(List.of(event), "etk","disputes", primaryKey.orElse(null));
     }
 }
