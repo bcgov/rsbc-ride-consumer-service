@@ -42,7 +42,6 @@ public class GeocoderService {
         String businessId = geolocationRequest.getBusinessId();
         String address = cleanUpAddress(addressRaw);
 
-        vertx = Vertx.vertx();
         WebClient webClient = WebClient.create(vertx);
         logger.info("Calling Geocoder API with address: " + address);
 

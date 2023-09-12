@@ -31,7 +31,6 @@ public class RideAdapterService {
     @WithSpan
     public CompletionStage<HttpResponse<Buffer>> sendData(List<Object> persistenceList, String schema, String tableName, List<String> primaryKey) {
 
-        vertx = Vertx.vertx();
         WebClient webClient = WebClient.create(vertx);
         String payload = getPayload(persistenceList, schema, tableName, primaryKey);
         logger.info("Calling Ride DB Adapter API with payload: " + payload);
