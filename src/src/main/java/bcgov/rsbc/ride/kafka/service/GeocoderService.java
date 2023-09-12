@@ -10,6 +10,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 import org.json.JSONObject;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.util.concurrent.CompletionStage;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,13 +33,15 @@ public class GeocoderService {
     @ConfigProperty(name = "geocoder.api.uri")
     private String URI;
 
+    @Inject
+    Vertx vertx;
+
     @WithSpan
     public CompletionStage<Geolocation> callGeocoderApi( GeolocationRequest geolocationRequest) {
         String addressRaw = geolocationRequest.getViolationHighwayDesc() + ", " + geolocationRequest.getViolationCityName();
         String businessId = geolocationRequest.getBusinessId();
         String address = cleanUpAddress(addressRaw);
 
-        Vertx vertx = Vertx.vertx();
         WebClient webClient = WebClient.create(vertx);
         logger.info("Calling Geocoder API with address: " + address);
 

@@ -29,7 +29,7 @@ public class IssuanceEvent extends EtkEventHandler<String,IssuanceRecord> {
     @Override
     public void execute(IssuanceRecord event) {
         logger.info("Issuance Event received: " + event);
-        rideAdapterService.sendData(event, "etk.issuances", primaryKey.orElse(null))
+        rideAdapterService.sendData(List.of(event), "etk", "issuances", primaryKey.orElse(null))
                 .thenRun(() -> geolocationEvent.execute(geolocationEvent.map(event)));
     }
 }
