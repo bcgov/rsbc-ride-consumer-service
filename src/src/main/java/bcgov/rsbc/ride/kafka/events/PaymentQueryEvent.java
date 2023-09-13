@@ -28,9 +28,10 @@ public class PaymentQueryEvent extends EtkEventHandler<String, PaymentQueryRecor
     Optional<List<String>> primaryKey;
 
     @Override
-    public void execute(PaymentQueryRecord event, String key) {
+    public void execute(PaymentQueryRecord event, String eventId) {
         logger.info("Payment Query Event received: " + event);
-        reconService.updateMainStagingStatus(key,"consumer_process");
-        rideAdapterService.sendData(List.of(event), "etk", "queries", primaryKey.orElse(null));
+        reconService.updateMainStagingStatus(eventId,"consumer_process");
+        rideAdapterService.sendData(List.of(event), eventId,
+                "etk", "queries", primaryKey.orElse(null), 5000);
     }
 }
