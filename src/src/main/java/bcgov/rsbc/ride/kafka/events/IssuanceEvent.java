@@ -34,7 +34,7 @@ public class IssuanceEvent extends EtkEventHandler<String,IssuanceRecord> {
     public void execute(IssuanceRecord event, String key) {
         logger.info("Issuance Event received: " + event);
         reconService.updateMainStagingStatus(key,"consumer_process");
-        rideAdapterService.sendData(List.of(event), "etk", "issuances", primaryKey.orElse(null))
+        rideAdapterService.sendData(List.of(event), "etk", "issuances", primaryKey.orElse(null),key)
                 .thenRun(() -> geolocationEvent.execute(geolocationEvent.map(event),key));
     }
 }

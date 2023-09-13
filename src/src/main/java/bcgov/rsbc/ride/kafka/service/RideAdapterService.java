@@ -14,6 +14,8 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 
+import bcgov.rsbc.ride.kafka.service.ReconService;
+
 @Slf4j
 @ApplicationScoped
 public class RideAdapterService {
@@ -26,10 +28,13 @@ public class RideAdapterService {
     private String HOST;
 
     @Inject
+    ReconService reconService;
+
+    @Inject
     Vertx vertx;
 
-    @WithSpan
-    public CompletionStage<HttpResponse<Buffer>> sendData(List<Object> persistenceList, String schema, String tableName, List<String> primaryKey) {
+//    @WithSpan
+    public CompletionStage<HttpResponse<Buffer>> sendData(List<Object> persistenceList, String schema, String tableName, List<String> primaryKey,String key) {
 
         WebClient webClient = WebClient.create(vertx);
         String payload = getPayload(persistenceList, schema, tableName, primaryKey);
@@ -40,9 +45,12 @@ public class RideAdapterService {
                 .sendJson(payload).toCompletionStage().thenApply(resp -> {
                     if (resp.statusCode() != 200) {
                         logger.error("Error calling Ride DB Adapter API: " + resp.statusCode() + " " + resp.statusMessage());
+                        reconService.sendErrorRecords(key,"Error calling Ride DB Adapter API: " + resp.statusCode() + " " + resp.statusMessage());
+                        reconService.updateMainStagingStatus(key,"consumer_error");
                         return null;
                     }
                     logger.info("Persistence finished.");
+                    reconService.updateMainStagingStatus(key,"consumer_bi_sent");
                     return resp;
                 });
     }

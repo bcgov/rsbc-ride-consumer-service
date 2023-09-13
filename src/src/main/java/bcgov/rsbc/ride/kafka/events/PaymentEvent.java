@@ -31,6 +31,6 @@ public class PaymentEvent extends EtkEventHandler<String, PaymentRecord>{
     public void execute(PaymentRecord event, String key) {
         logger.info("Payment Event received: " + event);
         reconService.updateMainStagingStatus(key,"consumer_process");
-        rideAdapterService.sendData(List.of(event), "etk", "payments", primaryKey.orElse(null));
+        rideAdapterService.sendData(List.of(event), "etk", "payments", primaryKey.orElse(null),key);
     }
 }

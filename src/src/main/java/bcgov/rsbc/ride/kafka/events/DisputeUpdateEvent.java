@@ -33,6 +33,6 @@ public class DisputeUpdateEvent extends EtkEventHandler<String, DisputeUpdateRec
         logger.info("Dispute Update Event received: " + event);
         reconService.updateMainStagingStatus(key,"consumer_process");
 
-        rideAdapterService.sendData(List.of(event), "etk", "dispute_status_update", primaryKey.orElse(null));
+        rideAdapterService.sendData(List.of(event), "etk", "dispute_status_update", primaryKey.orElse(null),key);
     }
 }

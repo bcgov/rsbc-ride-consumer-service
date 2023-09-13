@@ -46,6 +46,6 @@ public class GeolocationEvent extends EtkEventHandler<IssuanceRecord, Geolocatio
         logger.info("GeolocationRequest Event received: " + event);
         reconService.updateMainStagingStatus(key,"consumer_process");
         geocoderService.callGeocoderApi(event).thenAccept(geoloc ->
-                rideAdapterService.sendData(List.of(geoloc),"gis", "geolocations", primaryKey.orElse(null)));
+                rideAdapterService.sendData(List.of(geoloc),"gis", "geolocations", primaryKey.orElse(null),key));
     }
 }
