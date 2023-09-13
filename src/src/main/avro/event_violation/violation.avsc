@@ -21,7 +21,7 @@
             },
             {
               "name": "count_number",
-              "type": "float"
+              "type": "int"
             },
             {
               "name": "act_code",
@@ -41,7 +41,7 @@
             },
             {
               "name": "wording_number",
-              "type": "float"
+              "type": "int"
             }
           ]
         }
