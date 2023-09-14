@@ -28,9 +28,10 @@ public class ViolationEvent extends EtkEventHandler<String, ViolationRecord>{
     Optional<List<String>> primaryKey;
 
     @Override
-    public void execute(ViolationRecord event, String key) {
+    public void execute(ViolationRecord event, String eventId) {
         logger.info("Violation Event received: " + event);
-        reconService.updateMainStagingStatus(key,"consumer_process");
-        rideAdapterService.sendData(List.of(event), "etk", "violations", primaryKey.orElse(null));
+        reconService.updateMainStagingStatus(eventId,"consumer_process");
+        rideAdapterService.sendData(List.of(event), eventId,
+                "etk", "violations", primaryKey.orElse(null), 5000);
     }
 }

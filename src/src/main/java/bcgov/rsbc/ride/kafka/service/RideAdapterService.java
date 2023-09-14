@@ -12,7 +12,7 @@ import org.json.simple.JSONObject;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
-import java.util.concurrent.CompletionStage;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @ApplicationScoped
@@ -29,31 +29,42 @@ public class RideAdapterService {
     Vertx vertx;
 
     @WithSpan
-    public CompletionStage<HttpResponse<Buffer>> sendData(List<Object> persistenceList, String schema, String tableName, List<String> primaryKey) {
+    public CompletableFuture<HttpResponse<Buffer>> sendData(List<Object> persistenceList, String eventId, String schema, String tableName,
+                                                            List<String> primaryKey, int timeoutMilliseconds) {
 
         WebClient webClient = WebClient.create(vertx);
-        String payload = getPayload(persistenceList, schema, tableName, primaryKey);
-        logger.info("Calling Ride DB Adapter API with payload: " + payload);
+        String payload = getPayload(persistenceList, eventId, schema, tableName, primaryKey);
+        logger.info("Calling Ride DB Adapter API with payload: " + payload + ", eventId: " + eventId);
 
-         return webClient.post(PORT, HOST, "/upsertdata")
+        return webClient
+                .post(PORT, HOST,"/upsertdata")
+                .timeout(timeoutMilliseconds)
                 .putHeader("Content-Type", "application/json")
-                .sendJson(payload).toCompletionStage().thenApply(resp -> {
+                .sendJson(payload)
+                .toCompletionStage()
+                .exceptionally(e -> {
+                    logger.error("Error calling Ride DB Adapter API: " + e.getMessage() + ", eventId:" + eventId);
+                    return null;
+                })
+                .toCompletableFuture()
+                .thenApply(resp -> {
                     if (resp.statusCode() != 200) {
-                        logger.error("Error calling Ride DB Adapter API: " + resp.statusCode() + " " + resp.statusMessage());
+                        logger.error("Error calling Ride DB Adapter API: " + resp.statusCode() + " " + resp.statusMessage() + ", eventId:" + eventId);
                         return null;
                     }
-                    logger.info("Persistence finished.");
+                    logger.info("Persistence finished" + ", eventId:" + eventId);
                     return resp;
                 });
     }
 
-    private String getPayload(List<Object> persistenceList, String schema, String tableName, List<String> primaryKey) {
+    private String getPayload(List<Object> persistenceList, String eventId, String schema, String tableName, List<String> primaryKey) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("tablename", tableName);
         jsonObject.put("schema", schema);
         jsonObject.put("destination", "bi");
         jsonObject.put("data", persistenceList);
         jsonObject.put("source", "etk_consumer");
+        jsonObject.put("eventid", eventId);
         if (primaryKey != null) {
             jsonObject.put("primarykeys", primaryKey);
         }
