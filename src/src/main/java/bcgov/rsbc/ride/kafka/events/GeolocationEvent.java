@@ -45,7 +45,6 @@ public class GeolocationEvent extends EtkEventHandler<IssuanceRecord, Geolocatio
     @Override
     public void execute(GeolocationRequest event,String eventId) {
         logger.info("GeolocationRequest Event received: " + event);
-
         BackoffConfig backoffConfig = BackoffConfig.builder()
                 .maxRetries(3)
                 .timeoutSeconds(3)
