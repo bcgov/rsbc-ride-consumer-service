@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Optional;
 import bcgov.rsbc.ride.kafka.service.ReconService;
 
-
 @Slf4j
 @ApplicationScoped
 public class DisputeEvent extends EtkEventHandler<String, DisputeRecord> {
@@ -29,9 +28,10 @@ public class DisputeEvent extends EtkEventHandler<String, DisputeRecord> {
     Optional<List<String>> primaryKey;
 
     @Override
-    public void execute(DisputeRecord event, String key) {
+    public void execute(DisputeRecord event, String eventId) {
         logger.info("Dispute Event received: " + event);
-        reconService.updateMainStagingStatus(key,"consumer_process");
-        rideAdapterService.sendData(List.of(event), "etk","disputes", primaryKey.orElse(null),key);
+        reconService.updateMainStagingStatus(eventId,"consumer_process");
+        rideAdapterService.sendData(List.of(event), eventId,
+                "etk","disputes", primaryKey.orElse(null), 5000);
     }
 }

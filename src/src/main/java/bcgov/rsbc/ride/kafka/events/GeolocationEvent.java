@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
 import bcgov.rsbc.ride.kafka.service.ReconService;
+import bcgov.rsbc.ride.kafka.service.BackoffExecution.BackoffConfig;
 
 @Slf4j
 @ApplicationScoped
@@ -42,10 +43,19 @@ public class GeolocationEvent extends EtkEventHandler<IssuanceRecord, Geolocatio
     }
 
     @Override
-    public void execute(GeolocationRequest event,String key) {
+    public void execute(GeolocationRequest event,String eventId) {
         logger.info("GeolocationRequest Event received: " + event);
-        reconService.updateMainStagingStatus(key,"consumer_process");
-        geocoderService.callGeocoderApi(event).thenAccept(geoloc ->
-                rideAdapterService.sendData(List.of(geoloc),"gis", "geolocations", primaryKey.orElse(null),key));
+        BackoffConfig backoffConfig = BackoffConfig.builder()
+                .maxRetries(3)
+                .timeoutSeconds(3)
+                .retryIntervalMilliseconds(1250) // 1.25 seconds retry interval
+                .maxDelayMilliseconds(15000) // 15 seconds max delay
+                .build();
+
+        reconService.updateMainStagingStatus(eventId,"consumer_process");
+        geocoderService.callGeocoderApi(event, eventId, backoffConfig)
+                .thenApply(geoloc -> { if (geoloc != null) logger.info("Geolocation received Successfully: " + geoloc); return geoloc; })
+                .thenAccept(geoloc -> rideAdapterService.sendData(List.of(geoloc), eventId,
+                        "gis", "geolocations", primaryKey.orElse(null), 5000));
     }
 }

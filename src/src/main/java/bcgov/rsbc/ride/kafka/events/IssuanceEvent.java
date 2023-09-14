@@ -31,10 +31,11 @@ public class IssuanceEvent extends EtkEventHandler<String,IssuanceRecord> {
     Optional<List<String>> primaryKey;
 
     @Override
-    public void execute(IssuanceRecord event, String key) {
+    public void execute(IssuanceRecord event, String eventId) {
         logger.info("Issuance Event received: " + event);
-        reconService.updateMainStagingStatus(key,"consumer_process");
-        rideAdapterService.sendData(List.of(event), "etk", "issuances", primaryKey.orElse(null),key)
-                .thenRun(() -> geolocationEvent.execute(geolocationEvent.map(event),key));
+        reconService.updateMainStagingStatus(eventId,"consumer_process");
+        rideAdapterService.sendData(List.of(event), eventId,
+                "etk", "issuances", primaryKey.orElse(null), 5000)
+                .thenRun(() -> geolocationEvent.execute(geolocationEvent.map(event), eventId));
     }
 }
