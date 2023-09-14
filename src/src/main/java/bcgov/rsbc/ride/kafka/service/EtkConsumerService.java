@@ -8,12 +8,17 @@ import org.jboss.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import bcgov.rsbc.ride.kafka.service.ReconService;
+
 @ApplicationScoped
 public class EtkConsumerService {
     private static final Logger logger = Logger.getLogger(EtkConsumerService.class);
 
     @Inject
     EtkEventFactory etkEventsFactory;
+
+    @Inject
+    ReconService reconService;
 
     @WithSpan
     public <S, T> boolean processEtkEvents(Record<Long, String> event, S inputType, Class<T> eventType) {
@@ -32,6 +37,8 @@ public class EtkConsumerService {
             
         } catch (Exception e) {
             logger.error("Exception occurred while reading decoded event, exception details: " + e + "; " + e.getMessage());
+            reconService.updateMainStagingStatus(recordKey, "consumer_error");
+            reconService.sendErrorRecords(recordKey,e.getMessage(),"data_issue");
         }
         return eventStatus;
     }

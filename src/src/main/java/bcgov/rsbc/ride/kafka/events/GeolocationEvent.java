@@ -52,7 +52,7 @@ public class GeolocationEvent extends EtkEventHandler<IssuanceRecord, Geolocatio
                 .maxDelayMilliseconds(15000) // 15 seconds max delay
                 .build();
 
-        reconService.updateMainStagingStatus(eventId,"consumer_process");
+        reconService.updateMainStagingStatus(eventId,"consumer_geolocation_process");
         geocoderService.callGeocoderApi(event, eventId, backoffConfig)
                 .thenApply(geoloc -> { if (geoloc != null) logger.info("Geolocation received Successfully: " + geoloc); return geoloc; })
                 .thenAccept(geoloc -> rideAdapterService.sendData(List.of(geoloc), eventId,

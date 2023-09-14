@@ -67,7 +67,7 @@ public class ReconService {
 
 
 //    send error records to recon api
-    public CompletionStage<HttpResponse<Buffer>> sendErrorRecords(String eventId,String errMsg) {
+    public CompletionStage<HttpResponse<Buffer>> sendErrorRecords(String eventId,String errMsg,String errCode) {
         logger.info("Sending error records to Recon service for eventid: " + eventId);
         //DONE: Query the mainstaging collection for the eventid and get payload data and endpoints
         String apiPath="/querytable?collection_name=mainstaging&eventid="+eventId;
@@ -83,6 +83,10 @@ public class ReconService {
                     logger.info("Querying Recon staging finished.");
                     logger.info(resp.body());
                     List respList = resp.body().toJsonArray().getList();
+                    if (respList.size() == 0) {
+                        logger.error("No event records found for eventid: " + eventId);
+                        return null;
+                    }
                     logger.info(respList.get(0));
                     JSONObject jsonObject = new JSONObject((Map) respList.get(0));
                     logger.info(jsonObject.get("payloaddata"));
@@ -98,7 +102,7 @@ public class ReconService {
                     String[] tmpArr = jsonObject.get("apipath").toString().split("/");
                     errPayload.put("eventType",tmpArr[2]);
                     errPayload.put("messageStatus","consumer_error");
-                    errPayload.put("errorcategory","data_issue or others");
+                    errPayload.put("errorcategory",errCode);
 
 
 

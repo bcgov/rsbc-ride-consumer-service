@@ -19,6 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import static java.util.Base64.getEncoder;
 import bcgov.rsbc.ride.kafka.service.BackoffExecution.BackoffConfig;
+import bcgov.rsbc.ride.kafka.service.ReconService;
 
 @Slf4j
 @ApplicationScoped
@@ -43,6 +44,10 @@ public class GeocoderService {
     @Inject
     BackoffExecution backoffExecution;
 
+
+    @Inject
+    ReconService reconService;
+
     @WithSpan
     public CompletionStage<Geolocation> callGeocoderApi( GeolocationRequest geolocationRequest, String eventId, BackoffConfig backoffConfig) {
         String addressRaw = geolocationRequest.getViolationHighwayDesc() + ", " + geolocationRequest.getViolationCityName();
@@ -64,6 +69,8 @@ public class GeocoderService {
         return responseFuture.thenApply(resp -> {
             if (resp.statusCode() != 200) {
                 logger.error("Error calling Geocoder API: " + resp.statusCode() + " " + resp.statusMessage());
+                reconService.updateMainStagingStatus(eventId,"geocoder_error");
+                reconService.sendErrorRecords(eventId,"error in getting geolocation","others");
                 return null;
             }
             JSONObject jsonObject = new JSONObject(resp.bodyAsString());
@@ -86,6 +93,8 @@ public class GeocoderService {
                     .faults(dataBc.getJSONArray("faults"))
                     .build();
         }).exceptionally(e -> {
+            reconService.updateMainStagingStatus(eventId,"geocoder_error");
+            reconService.sendErrorRecords(eventId,"error in getting geolocation","others");
             throw new RuntimeException("Error calling Geocoder API: " + e.getMessage());
         });
     }

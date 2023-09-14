@@ -50,14 +50,16 @@ public class RideAdapterService {
                 .toCompletionStage()
                 .exceptionally(e -> {
                     logger.error("Error calling Ride DB Adapter API: " + e.getMessage() + ", eventId:" + eventId);
+                    reconService.updateMainStagingStatus(eventId,"consumer_error");
+                    reconService.sendErrorRecords(eventId,"Error calling Ride DB Adapter API: " + e.getMessage(),"others");
                     return null;
                 })
                 .toCompletableFuture()
                 .thenApply(resp -> {
                     if (resp.statusCode() != 200) {
-                        logger.error("Error calling Ride DB Adapter API: " + resp.statusCode() + " " + resp.statusMessage() + ", eventId:" + eventId);
-                        reconService.sendErrorRecords(eventId,"Error calling Ride DB Adapter API: " + resp.statusCode() + " " + resp.statusMessage());
+                       logger.error("Error calling Ride DB Adapter API: " + resp.statusCode() + " " + resp.statusMessage() + ", eventId:" + eventId);
                         reconService.updateMainStagingStatus(eventId,"consumer_error");
+                        reconService.sendErrorRecords(eventId,"Error calling Ride DB Adapter API: " + resp.statusCode() + " " + resp.statusMessage(),"others");
                         return null;
                     }
                     logger.info("Persistence finished" + ", eventId:" + eventId);
