@@ -29,10 +29,7 @@ public class DisputeUpdateEvent extends EtkEventHandler<String, DisputeUpdateRec
 
     @Override
     public void execute(DisputeUpdateRecord event, String eventId) {
-<<<<<<< HEAD
-=======
         setEventId(event, eventId);
->>>>>>> 9982d73 (Fix Dispute updates table name and avros)
         logger.info("Dispute Update Event received: " + event);
         reconService.updateMainStagingStatus(eventId,"consumer_process");
         rideAdapterService.sendData(List.of(event), eventId,
