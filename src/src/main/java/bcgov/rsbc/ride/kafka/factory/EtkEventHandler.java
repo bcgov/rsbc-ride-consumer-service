@@ -4,8 +4,7 @@ import bcgov.rsbc.ride.kafka.core.CustomObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 
 @ApplicationScoped
 public abstract class EtkEventHandler<S, T> {
@@ -46,4 +45,10 @@ public abstract class EtkEventHandler<S, T> {
     }
     public abstract void execute(T event,String recordKey);
 
+    public void setEventId(T event, String eventId) {
+        try {
+            event.getClass().getDeclaredField("event_id").setAccessible(true);
+            event.getClass().getMethod("setEventId", String.class).invoke(event, eventId);
+        } catch (NoSuchFieldException| NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {}
+    }
 }

@@ -16,6 +16,11 @@
           "name": "DisputeRecord",
           "fields": [
             {
+              "name": "event_id",
+              "type": ["null", "string"],
+              "default": null
+            },
+            {
               "name": "ticket_number",
               "type": "string"
             },

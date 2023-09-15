@@ -29,6 +29,7 @@ public class ViolationEvent extends EtkEventHandler<String, ViolationRecord>{
 
     @Override
     public void execute(ViolationRecord event, String eventId) {
+        setEventId(event, eventId);
         logger.info("Violation Event received: " + event);
         reconService.updateMainStagingStatus(eventId,"consumer_process");
         rideAdapterService.sendData(List.of(event), eventId,

@@ -44,7 +44,6 @@ public class GeocoderService {
     @Inject
     BackoffExecution backoffExecution;
 
-
     @Inject
     ReconService reconService;
 

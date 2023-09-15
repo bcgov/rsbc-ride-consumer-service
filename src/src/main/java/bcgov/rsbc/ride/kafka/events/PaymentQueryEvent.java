@@ -29,6 +29,7 @@ public class PaymentQueryEvent extends EtkEventHandler<String, PaymentQueryRecor
 
     @Override
     public void execute(PaymentQueryRecord event, String eventId) {
+        setEventId(event, eventId);
         logger.info("Payment Query Event received: " + event);
         reconService.updateMainStagingStatus(eventId,"consumer_process");
         rideAdapterService.sendData(List.of(event), eventId,

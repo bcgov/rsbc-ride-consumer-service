@@ -32,6 +32,7 @@ public class IssuanceEvent extends EtkEventHandler<String,IssuanceRecord> {
 
     @Override
     public void execute(IssuanceRecord event, String eventId) {
+        setEventId(event, eventId);
         logger.info("Issuance Event received: " + event);
         reconService.updateMainStagingStatus(eventId,"consumer_process");
         rideAdapterService.sendData(List.of(event), eventId,

@@ -14,8 +14,6 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import bcgov.rsbc.ride.kafka.service.ReconService;
-
 @Slf4j
 @ApplicationScoped
 public class RideAdapterService {
@@ -67,6 +65,7 @@ public class RideAdapterService {
                     return resp;
                 });
     }
+
 
     private JSONObject getPayload(List<Object> persistenceList, String eventId, String schema, String tableName, List<String> primaryKey) {
         JSONObject jsonObject = new JSONObject();
