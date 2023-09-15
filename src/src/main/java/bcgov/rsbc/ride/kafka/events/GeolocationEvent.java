@@ -45,10 +45,6 @@ public class GeolocationEvent extends EtkEventHandler<IssuanceRecord, Geolocatio
     @Override
     public void execute(GeolocationRequest event,String eventId) {
         logger.info("GeolocationRequest Event received: " + event);
-<<<<<<< HEAD
-=======
-
->>>>>>> 9982d73 (Fix Dispute updates table name and avros)
         BackoffConfig backoffConfig = BackoffConfig.builder()
                 .maxRetries(3)
                 .timeoutSeconds(3)
@@ -56,11 +52,7 @@ public class GeolocationEvent extends EtkEventHandler<IssuanceRecord, Geolocatio
                 .maxDelayMilliseconds(15000) // 15 seconds max delay
                 .build();
 
-<<<<<<< HEAD
         reconService.updateMainStagingStatus(eventId,"consumer_geolocation_process");
-=======
-        reconService.updateMainStagingStatus(eventId,"consumer_process");
->>>>>>> 9982d73 (Fix Dispute updates table name and avros)
         geocoderService.callGeocoderApi(event, eventId, backoffConfig)
                 .thenApply(geoloc -> { if (geoloc != null) logger.info("Geolocation received Successfully: " + geoloc); return geoloc; })
                 .thenAccept(geoloc -> rideAdapterService.sendData(List.of(geoloc), eventId,
