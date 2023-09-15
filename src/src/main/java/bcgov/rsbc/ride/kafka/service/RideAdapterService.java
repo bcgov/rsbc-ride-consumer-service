@@ -39,7 +39,7 @@ public class RideAdapterService {
                                                             List<String> primaryKey, int timeoutMilliseconds) {
 
         WebClient webClient = WebClient.create(vertx);
-        String payload = getPayload(persistenceList, eventId, schema, tableName, primaryKey);
+        JSONObject payload = getPayload(persistenceList, eventId, schema, tableName, primaryKey);
         logger.info("Calling Ride DB Adapter API with payload: " + payload + ", eventId: " + eventId);
 
         return webClient
@@ -68,7 +68,7 @@ public class RideAdapterService {
                 });
     }
 
-    private String getPayload(List<Object> persistenceList, String eventId, String schema, String tableName, List<String> primaryKey) {
+    private JSONObject getPayload(List<Object> persistenceList, String eventId, String schema, String tableName, List<String> primaryKey) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("tablename", tableName);
         jsonObject.put("schema", schema);
@@ -79,6 +79,6 @@ public class RideAdapterService {
         if (primaryKey != null) {
             jsonObject.put("primarykeys", primaryKey);
         }
-        return jsonObject.toJSONString();
+        return jsonObject;
     }
 }
