@@ -32,10 +32,7 @@ public class IssuanceEvent extends EtkEventHandler<String,IssuanceRecord> {
 
     @Override
     public void execute(IssuanceRecord event, String eventId) {
-<<<<<<< HEAD
-=======
         setEventId(event, eventId);
->>>>>>> 9982d73 (Fix Dispute updates table name and avros)
         logger.info("Issuance Event received: " + event);
         reconService.updateMainStagingStatus(eventId,"consumer_process");
         rideAdapterService.sendData(List.of(event), eventId,
