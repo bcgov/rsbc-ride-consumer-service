@@ -21,7 +21,7 @@
             },
             {
               "name": "count_number",
-              "type": "float"
+              "type": "int"
             },
             {
               "name": "payment_card_type",
@@ -33,7 +33,7 @@
             },
             {
               "name": "payment_amount",
-              "type": "float"
+              "type": "int"
             },
             {
               "name": "transaction_id",

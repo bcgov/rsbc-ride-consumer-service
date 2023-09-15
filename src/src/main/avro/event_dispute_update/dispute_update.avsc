@@ -21,7 +21,7 @@
             },
             {
               "name": "count_number",
-              "type": "float"
+              "type": "int"
             },
             {
               "name": "dispute_action_date",
