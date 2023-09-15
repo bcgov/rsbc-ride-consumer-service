@@ -19,10 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import static java.util.Base64.getEncoder;
 import bcgov.rsbc.ride.kafka.service.BackoffExecution.BackoffConfig;
-<<<<<<< HEAD
 import bcgov.rsbc.ride.kafka.service.ReconService;
-=======
->>>>>>> 9982d73 (Fix Dispute updates table name and avros)
 
 @Slf4j
 @ApplicationScoped
@@ -47,13 +44,9 @@ public class GeocoderService {
     @Inject
     BackoffExecution backoffExecution;
 
-<<<<<<< HEAD
-
     @Inject
     ReconService reconService;
 
-=======
->>>>>>> 9982d73 (Fix Dispute updates table name and avros)
     @WithSpan
     public CompletionStage<Geolocation> callGeocoderApi( GeolocationRequest geolocationRequest, String eventId, BackoffConfig backoffConfig) {
         String addressRaw = geolocationRequest.getViolationHighwayDesc() + ", " + geolocationRequest.getViolationCityName();
@@ -75,11 +68,8 @@ public class GeocoderService {
         return responseFuture.thenApply(resp -> {
             if (resp.statusCode() != 200) {
                 logger.error("Error calling Geocoder API: " + resp.statusCode() + " " + resp.statusMessage());
-<<<<<<< HEAD
                 reconService.updateMainStagingStatus(eventId,"geocoder_error");
                 reconService.sendErrorRecords(eventId,"error in getting geolocation","others");
-=======
->>>>>>> 9982d73 (Fix Dispute updates table name and avros)
                 return null;
             }
             JSONObject jsonObject = new JSONObject(resp.bodyAsString());
@@ -102,11 +92,8 @@ public class GeocoderService {
                     .faults(dataBc.getJSONArray("faults"))
                     .build();
         }).exceptionally(e -> {
-<<<<<<< HEAD
             reconService.updateMainStagingStatus(eventId,"geocoder_error");
             reconService.sendErrorRecords(eventId,"error in getting geolocation","others");
-=======
->>>>>>> 9982d73 (Fix Dispute updates table name and avros)
             throw new RuntimeException("Error calling Geocoder API: " + e.getMessage());
         });
     }
