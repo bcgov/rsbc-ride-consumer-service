@@ -1,0 +1,99 @@
+{
+  "name": "ApproximateGeolocationData",
+  "type": "record",
+  "namespace": "bcgov.rsbc.ride.kafka.models",
+  "fields": [
+    {
+      "name": "event_type",
+      "type": "string"
+    },
+    {
+      "name": "ApproximateGeolocation",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "ApproximateGeolocationRecord",
+          "fields": [
+            {
+              "name": "business_program",
+              "type": "string"
+            },
+            {
+              "name": "business_type",
+              "type": "string"
+            },
+            {
+              "name": "business_id",
+              "type": "string"
+            },
+            {
+              "name": "long",
+              "type": "string"
+            },
+            {
+              "name": "lat",
+              "type": "string"
+            },
+            {
+              "name": "precision",
+              "type": "string"
+            },
+            {
+              "name": "requested_address",
+              "type": "string"
+            },
+            {
+              "name": "submitted_address",
+              "type": "string"
+            },
+            {
+              "name": "full_address",
+              "type": "string"
+            },
+            {
+              "name": "databc_long",
+              "type": "string"
+            },
+            {
+              "name": "databc_lat",
+              "type": "string"
+            },
+            {
+              "name": "databc_score",
+              "type": "string"
+            },
+            {
+              "name": "databc_precision",
+              "type": "string"
+            },
+            {
+              "name": "alternate_source",
+              "type": "string"
+            },
+            {
+              "name": "alternate_long",
+              "type": "string"
+            },
+            {
+              "name": "alternate_lat",
+              "type": "string"
+            },
+            {
+              "name": "alternate_score",
+              "type": "string"
+            },
+            {
+              "name": "alternate_precision",
+              "type": "string"
+            },
+            {
+              "name": "faults",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 package bcgov.rsbc.ride.kafka.service;
 
-import bcgov.rsbc.ride.kafka.models.Geolocation;
+import bcgov.rsbc.ride.kafka.models.ApproximateGeolocationRecord;
 import bcgov.rsbc.ride.kafka.models.GeolocationRequest;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import io.vertx.core.Vertx;
@@ -19,7 +19,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import static java.util.Base64.getEncoder;
 import bcgov.rsbc.ride.kafka.service.BackoffExecution.BackoffConfig;
-import bcgov.rsbc.ride.kafka.service.ReconService;
 
 @Slf4j
 @ApplicationScoped
@@ -48,9 +47,9 @@ public class GeocoderService {
     ReconService reconService;
 
     @WithSpan
-    public CompletionStage<Geolocation> callGeocoderApi( GeolocationRequest geolocationRequest, String eventId, BackoffConfig backoffConfig) {
-        String addressRaw = geolocationRequest.getViolationHighwayDesc() + ", " + geolocationRequest.getViolationCityName();
-        String businessId = geolocationRequest.getBusinessId();
+    public CompletionStage<ApproximateGeolocationRecord> callGeocoderApi(GeolocationRequest geolocationRequest, String eventId, BackoffConfig backoffConfig) {
+        String addressRaw = geolocationRequest.violationHighwayDesc() + ", " + geolocationRequest.violationCityName();
+        String businessId = geolocationRequest.businessId();
         String address = cleanUpAddress(addressRaw);
 
         WebClient webClient = WebClient.create(vertx);
@@ -75,22 +74,30 @@ public class GeocoderService {
             JSONObject jsonObject = new JSONObject(resp.bodyAsString());
             JSONObject dataBc = jsonObject.getJSONObject("dataBc");
 
-            return Geolocation.builder()
-                    .businessProgram("ETK")
-                    .businessType("violation")
-                    .businessId(businessId)
-                    .latitude(dataBc.getBigDecimal("lat"))
-                    .longitude(dataBc.getBigDecimal("lon"))
-                    .precision(dataBc.getString("precision"))
-                    .requestedAddress(jsonObject.getString("addressRaw"))
-                    .submittedAddress(address)
-                    .databcLong(dataBc.getBigDecimal("lon"))
-                    .databcLat(dataBc.getBigDecimal("lat"))
-                    .databcScore(dataBc.getInt("score"))
-                    .databcPrecision(dataBc.getString("precision"))
-                    .fullAddress(dataBc.getString("fullAddress"))
-                    .faults(dataBc.getJSONArray("faults"))
-                    .build();
+            try {
+                ApproximateGeolocationRecord geolocation =  new ApproximateGeolocationRecord();
+                geolocation.setBusinessProgram("ETK");
+                geolocation.setBusinessType("violation");
+                geolocation.setBusinessId(businessId);
+                geolocation.setLat(dataBc.getBigDecimal("lat").toString());
+                geolocation.setLong$(dataBc.getBigDecimal("lon").toString());
+                geolocation.setPrecision(dataBc.getString("precision"));
+                geolocation.setRequestedAddress(jsonObject.getString("addressRaw"));
+                geolocation.setSubmittedAddress(address);
+                geolocation.setDatabcLong(dataBc.getBigDecimal("lon").toString());
+                geolocation.setDatabcLat(dataBc.getBigDecimal("lat").toString());
+                geolocation.setDatabcScore(String.valueOf(dataBc.getInt("score")));
+                geolocation.setDatabcPrecision(dataBc.getString("precision"));
+                geolocation.setFullAddress(dataBc.getString("fullAddress"));
+                geolocation.setFaults(dataBc.getJSONArray("faults").toString());
+
+                logger.info("Geolocation received Successfully: " + geolocation);
+                return geolocation;
+            }
+            catch (Exception e) {
+                logger.error("Error in converting geolocation to json: " + e.getMessage());
+                return null;
+            }
         }).exceptionally(e -> {
             reconService.updateMainStagingStatus(eventId,"geocoder_error");
             reconService.sendErrorRecords(eventId,"error in getting geolocation","others");

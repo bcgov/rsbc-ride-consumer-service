@@ -17,9 +17,9 @@ import bcgov.rsbc.ride.kafka.service.BackoffExecution.BackoffConfig;
 
 @Slf4j
 @ApplicationScoped
-public class GeolocationEvent extends EtkEventHandler<IssuanceRecord, GeolocationRequest>{
+public class ApproximateGeolocationEvent extends EtkEventHandler<IssuanceRecord, GeolocationRequest>{
 
-    private static final Logger logger = Logger.getLogger(GeolocationEvent.class);
+    private static final Logger logger = Logger.getLogger(ApproximateGeolocationEvent.class);
 
     @Inject
     GeocoderService geocoderService;
