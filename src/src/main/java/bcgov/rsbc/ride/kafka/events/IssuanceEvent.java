@@ -22,7 +22,7 @@ public class IssuanceEvent extends EtkEventHandler<String,IssuanceRecord> {
     RideAdapterService rideAdapterService;
 
     @Inject
-    GeolocationEvent geolocationEvent;
+    ApproximateGeolocationEvent approximateGeolocationEvent;
 
     @Inject
     ReconService reconService;
@@ -37,6 +37,6 @@ public class IssuanceEvent extends EtkEventHandler<String,IssuanceRecord> {
         reconService.updateMainStagingStatus(eventId,"consumer_process");
         rideAdapterService.sendData(List.of(event), eventId,
                 "etk", "issuances", primaryKey.orElse(null), 5000)
-                .thenRun(() -> geolocationEvent.execute(geolocationEvent.map(event), eventId));
+                .thenRun(() -> approximateGeolocationEvent.execute(approximateGeolocationEvent.map(event), eventId));
     }
 }
