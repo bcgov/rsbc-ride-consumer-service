@@ -12,13 +12,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
-
-import bcgov.rsbc.ride.kafka.models.ReconStatusPayload;
-import bcgov.rsbc.ride.kafka.models.ReconStatusPayloadData;
-
 import java.util.List;
-import java.util.concurrent.CompletionStage;
-
 
 @Slf4j
 @ApplicationScoped
@@ -104,8 +98,6 @@ public class ReconService {
                     errPayload.put("messageStatus","consumer_error");
                     errPayload.put("errorcategory",errCode);
 
-
-
                     String insrtapiPath="/saveerrorstaging";
                     logger.info("Calling Recon service save error staging with apiPath: " + insrtapiPath);
                     webClient.post(PORT, HOST, insrtapiPath)
@@ -122,15 +114,6 @@ public class ReconService {
 
             return resp;
         });
-
 //        DONE: Call the recon api send error endpoint to send the error records
-
-
-
     }
-
-
-
 }
-
-

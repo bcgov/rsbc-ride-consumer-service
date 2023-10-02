@@ -15,6 +15,7 @@ public class EtkEventHandlerListProducer {
     @Inject PaymentEvent paymentEvent;
     @Inject PaymentQueryEvent paymentQueryEvent;
     @Inject ViolationEvent violationEvent;
+    @Inject GeolocationEvent geolocationEvent;
     @Inject ApproximateGeolocationEvent approximateGeolocationEvent;
 
     @Produces
@@ -27,6 +28,7 @@ public class EtkEventHandlerListProducer {
                 paymentEvent,
                 paymentQueryEvent,
                 violationEvent,
+                geolocationEvent,
                 approximateGeolocationEvent
         );
     }

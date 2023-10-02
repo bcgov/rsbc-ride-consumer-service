@@ -8,8 +8,6 @@ import org.jboss.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import bcgov.rsbc.ride.kafka.service.ReconService;
-
 @ApplicationScoped
 public class EtkConsumerService {
     private static final Logger logger = Logger.getLogger(EtkConsumerService.class);

@@ -151,4 +151,23 @@ public class RideEtkConsumer {
         }
         return eventStatus;
     }
+
+    @Incoming("incoming-geolocation")
+    @Blocking
+    public Boolean receive_geolocation(Record<Long, String> event) {
+        Span span = tracer.spanBuilder("RideEtkConsumer.receive_geolocation.incoming-geolocation").startSpan();
+        boolean eventStatus = false;
+        try (Scope scope = span.makeCurrent()){
+            String recordValue = event.value().substring(5);
+            eventStatus=etkConsumerService.processEtkEvents(event, recordValue, PreciseGeolocationRecord.class);
+            if(!eventStatus){
+                throw new Exception("error in processing event");
+            }
+        } catch (Exception e) {
+            logger.error("Exception occurred while sending decoded event, exception details: " + e + "; " + e.getMessage());
+        } finally {
+            span.end();
+        }
+        return eventStatus;
+    }
 }
