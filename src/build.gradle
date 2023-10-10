@@ -6,10 +6,16 @@ plugins {
 }
 
 repositories {
-    mavenCentral()
     mavenLocal()
+    mavenCentral()
     maven {
         url 'https://packages.confluent.io/maven/'
+    }
+    maven {
+        url 'https://repo.osgeo.org/repository/release/'
+    }
+    maven {
+        url 'https://repo.osgeo.org/repository/snapshot/'
     }
 }
 
@@ -79,6 +85,10 @@ dependencies {
     implementation 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.18.0-alpha'
     implementation 'io.quarkus:quarkus-micrometer-registry-prometheus'
     implementation 'io.quarkus:quarkus-opentelemetry-exporter-otlp'
+
+    // Geotools
+    implementation 'org.osgeo:proj4j:0.1.0'
+    implementation 'org.geotools:gt-main:27.0'
 }
 
 group 'bcgov.rsbc.ride.kafka'
