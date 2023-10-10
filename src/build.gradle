@@ -7,7 +7,11 @@ plugins {
 
 repositories {
     mavenLocal()
-    mavenCentral()
+    mavenCentral {
+        content {
+            excludeModule("javax.media", "jai_core")
+        }
+    }
     maven {
         url 'https://packages.confluent.io/maven/'
     }
