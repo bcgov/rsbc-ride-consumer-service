@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
@@ -38,6 +39,19 @@ public class RideAdapterService {
 
         WebClient webClient = WebClient.create(vertx);
         JSONObject payload = getPayload(persistenceList, eventId, schema, tableName, primaryKey);
+        try {
+            String payloadString = payload.toString();
+            if (payloadString.contains("eviolationformnumber")) {
+                payloadString = payloadString.replace("violationformnumber", "e_violation_form_number");
+                JSONParser parser = new JSONParser();
+//                JSONObject json1 = (JSONObject) parser.parse(payloadString);
+//                payload = json1;
+                payload = (JSONObject) parser.parse(payloadString);
+            }
+        } catch (Exception e) {
+            logger.error("Error transforming violation form number: " + e.getMessage() + ", eventId:" + eventId);
+        }
+
         logger.info("Calling Ride DB Adapter API with payload: " + payload + ", eventId: " + eventId);
 
         return webClient
