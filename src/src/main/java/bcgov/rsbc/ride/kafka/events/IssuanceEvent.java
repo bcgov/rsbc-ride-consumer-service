@@ -38,5 +38,6 @@ public class IssuanceEvent extends EtkEventHandler<String,IssuanceRecord> {
         rideAdapterService.sendData(List.of(event), eventId,
                 "etk", "issuances", primaryKey.orElse(null), 5000)
                 .thenRun(() -> approximateGeolocationEvent.execute(approximateGeolocationEvent.map(event), eventId));
+
     }
 }

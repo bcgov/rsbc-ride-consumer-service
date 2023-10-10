@@ -90,8 +90,6 @@ public class GeocoderService {
                 geolocation.setDatabcPrecision(dataBc.getString("precision"));
                 geolocation.setFullAddress(dataBc.getString("fullAddress"));
                 geolocation.setFaults(dataBc.getJSONArray("faults").toString());
-
-                logger.info("Geolocation received Successfully: " + geolocation);
                 return geolocation;
             }
             catch (Exception e) {
