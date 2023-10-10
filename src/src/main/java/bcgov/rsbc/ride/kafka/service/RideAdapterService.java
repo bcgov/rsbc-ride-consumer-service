@@ -41,7 +41,7 @@ public class RideAdapterService {
         JSONObject payload = getPayload(persistenceList, eventId, schema, tableName, primaryKey);
         try {
             String payloadString = payload.toString();
-            if (payloadString.contains("eviolationformnumber")) {
+            if (payloadString.contains("violationformnumber")) {
                 payloadString = payloadString.replace("violationformnumber", "e_violation_form_number");
                 JSONParser parser = new JSONParser();
 //                JSONObject json1 = (JSONObject) parser.parse(payloadString);
