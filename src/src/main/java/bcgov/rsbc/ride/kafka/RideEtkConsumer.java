@@ -44,6 +44,7 @@ public class RideEtkConsumer {
         boolean eventStatus = false;
         try (Scope scope = span.makeCurrent()){
             String recordValue = event.value().substring(5);
+            recordValue = recordValue.replace("e_violation_form_number", "eviolationformnumber");
             eventStatus=etkConsumerService.processEtkEvents(event, recordValue,IssuanceRecord.class);
             if(!eventStatus){
                 throw new Exception("error in processing event");
