@@ -42,7 +42,7 @@ public class RideAdapterService {
         try {
             String payloadString = payload.toString();
             if (payloadString.contains("eviolationformnumber")) {
-                payloadString = payloadString.replace("eviolationformnumber", "e_violation_form_number");
+                payloadString = payloadString.replace("violationformnumber", "e_violation_form_number");
                 JSONParser parser = new JSONParser();
 //                JSONObject json1 = (JSONObject) parser.parse(payloadString);
 //                payload = json1;

@@ -121,7 +121,7 @@ public class ReceiveEventsTest {
                 .setCertificateOfServiceDate("2020-12-25")
                 .setCertificateOfServiceNumber("222")
                 .setEViolationFormNumber("222")
-                .setEviolationformnumber("222")
+                .setViolationformnumber("222")
                 .setEnforcementJurisdictionName("222")
                 .setMreMinorVersionText("222")
                 .setCountQuantity("222")

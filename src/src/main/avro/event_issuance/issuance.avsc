@@ -129,7 +129,7 @@
               "type": "string"
             },
             {
-              "name": "eviolationformnumber",
+              "name": "violationformnumber",
               "type": "string"
             },
             {
