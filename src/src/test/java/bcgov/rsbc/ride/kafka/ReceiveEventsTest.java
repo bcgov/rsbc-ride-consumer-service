@@ -121,7 +121,7 @@ public class ReceiveEventsTest {
                 .setCertificateOfServiceDate("2020-12-25")
                 .setCertificateOfServiceNumber("222")
                 .setEViolationFormNumber("222")
-                .setViolationformnumber("222")
+                .setViolationformnumber(null)
                 .setEnforcementJurisdictionName("222")
                 .setMreMinorVersionText("222")
                 .setCountQuantity("222")
@@ -133,7 +133,8 @@ public class ReceiveEventsTest {
                 .build();
         Record<Long, String> record = Record.of(12345L, "12345" + issuance.toString());
         rideEtkConsumer.receive(record);
-        verify(etkConsumerService, times(1)).processEtkEvents(record, issuance.toString(), IssuanceRecord.class);
+        String issuanceStr=issuance.toString().replace("e_violation_form_number", "violationformnumber");
+        verify(etkConsumerService, times(1)).processEtkEvents(record, issuanceStr, IssuanceRecord.class);
     }
 
     @Test

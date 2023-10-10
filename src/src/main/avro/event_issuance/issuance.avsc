@@ -130,7 +130,8 @@
             },
             {
               "name": "violationformnumber",
-              "type": "string"
+              "type": ["null", "string"]
+
             },
             {
               "name": "enforcement_jurisdiction_name",
