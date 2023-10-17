@@ -32,7 +32,7 @@ public class PaymentQueryEvent extends EtkEventHandler<String, PaymentQueryRecor
         setEventId(event, eventId);
         logger.info("Payment Query Event received: " + event);
         reconService.updateMainStagingStatus(eventId,"consumer_process");
-        rideAdapterService.sendData(List.of(event), eventId,
-                "etk", "queries", primaryKey.orElse(null), 5000);
+        rideAdapterService.sendData(List.of(event), eventId, "etk", "queries", primaryKey.orElse(null), 5000)
+                .thenRun(() -> rideAdapterService.sendData(List.of(event.getEvent()), eventId, "etk", "events", primaryKey.orElse(null), 5000));
     }
 }

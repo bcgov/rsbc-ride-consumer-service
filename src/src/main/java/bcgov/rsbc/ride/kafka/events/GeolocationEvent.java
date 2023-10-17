@@ -56,8 +56,7 @@ public class GeolocationEvent extends EtkEventHandler<String, PreciseGeolocation
                 converterUTMToWGS84.convert(event) : converterBCAlbersToWGS84.convert(event);
 
         reconService.updateMainStagingStatus(eventId,"consumer_geolocation_process");
-        rideAdapterService.sendData(List.of(geolocation.toJson()), eventId,
-                "gis","geolocations", primaryKey.orElse(null), 5000);
+        rideAdapterService.sendData(List.of(geolocation.toJson()), eventId, "gis","geolocations", primaryKey.orElse(null), 5000);
 
     }
 }
