@@ -162,6 +162,10 @@
               "type": "string"
             },
             {
+              "name": "enforcement_org_unit_cd_txt",
+              "type": "string"
+            },
+            {
               "name": "counts",
               "type": {
                 "type": "array",
