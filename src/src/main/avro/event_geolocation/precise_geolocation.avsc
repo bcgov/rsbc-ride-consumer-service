@@ -30,6 +30,27 @@
             {
               "name": "y_value",
               "type": "string"
+            },
+            {
+              "name": "event",
+              "type": {
+                "type": "record",
+                "name": "EventRecord",
+                "fields": [
+                  {
+                    "name": "event_id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "event_version",
+                    "type": "string"
+                  },
+                  {
+                    "name": "event_date_time",
+                    "type": "string"
+                  }
+                ]
+              }
             }
           ]
         }

@@ -4,6 +4,10 @@
   "payment_card_type":"222",
   "payment_ticket_type_code":"222",
   "payment_amount": 333,
-  "transaction_id":"222"
-
+  "transaction_id":"222",
+  "event": {
+    "event_id": 12345,
+    "event_version": 222,
+    "event_date_time": "2022-01-01"
+  }
 }

@@ -2,5 +2,10 @@
   "ticket_number":"EA60137788",
   "server_code": "nse",
   "x_value":"794122",
-  "y_value":"568966"
+  "y_value":"568966",
+  "event": {
+    "event_id": 12345,
+    "event_version": 222,
+    "event_date_time": "2022-01-01"
+  }
 }
