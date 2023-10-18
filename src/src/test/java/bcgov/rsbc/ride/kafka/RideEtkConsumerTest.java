@@ -1,6 +1,5 @@
 package bcgov.rsbc.ride.kafka;
 
-import bcgov.rsbc.ride.kafka.core.PreciseGeolocationAvroMixin;
 import bcgov.rsbc.ride.kafka.core.CustomObjectMapper;
 import bcgov.rsbc.ride.kafka.events.ApproximateGeolocationEvent;
 import bcgov.rsbc.ride.kafka.models.*;
@@ -104,7 +103,7 @@ public class RideEtkConsumerTest {
 
         assertThrows(Exception.class, () ->{
             ApproximateGeolocationEvent approximateGeolocationEvent = new ApproximateGeolocationEvent();
-            approximateGeolocationEvent.execute(approximateGeolocationEvent.map(issuanceRecord), eventId);
+            approximateGeolocationEvent.execute(approximateGeolocationEvent.map(issuanceRecord));
         });
 
         Assertions.assertTrue(rideEtkConsumer.receive(
@@ -160,12 +159,19 @@ public class RideEtkConsumerTest {
         mockingReconUpdateMainStagingStatus(eventId);
         mockingGeocoderSvc(address, mockFileLocation);
 
-        PreciseGeolocationRecord preciseGeolocationRecord = customObjectMapper.getObjectMapper()
-                .addMixIn(PreciseGeolocationRecord.class, PreciseGeolocationAvroMixin.class)
-                .readValue(jsonPreciseGeolocation, PreciseGeolocationRecord.class);
+        PreciseGeolocationAdapter intermediate = customObjectMapper.getObjectMapper().readValue(jsonPreciseGeolocation, PreciseGeolocationAdapter.class);
+        String jsonString = customObjectMapper.getObjectMapper().writeValueAsString(intermediate.getEvent());
+        EventRecord eventRecord = customObjectMapper.getObjectMapper().readValue(jsonString, EventRecord.class);
 
-        Record<Long, String> eventRecord = Record.of(12345L, eventId + preciseGeolocationRecord.toString());
-        Assertions.assertFalse(rideEtkConsumer.receive_geolocation(eventRecord));
+        PreciseGeolocationRecord preciseGeolocationRecord = new PreciseGeolocationRecord();
+        preciseGeolocationRecord.setTicketNumber(intermediate.getTicket_number());
+        preciseGeolocationRecord.setServerCode(intermediate.getServer_code());
+        preciseGeolocationRecord.setXValue(intermediate.getX_value());
+        preciseGeolocationRecord.setYValue(intermediate.getY_value());
+        preciseGeolocationRecord.setEvent(eventRecord);
+
+        Record<Long, String> event = Record.of(12345L, eventId + preciseGeolocationRecord);
+        Assertions.assertTrue(rideEtkConsumer.receive_geolocation(event));
     }
 
     @NotNull
