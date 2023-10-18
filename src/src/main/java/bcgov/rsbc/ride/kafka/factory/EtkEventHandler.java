@@ -43,7 +43,7 @@ public abstract class EtkEventHandler<S, T> {
                 : (Class<T>) ((ParameterizedType) classType).getRawType();
         return objectMapper.getObjectMapper().readValue((String) input, rawType);
     }
-    public abstract void execute(T event,String recordKey);
+    public abstract void execute(T event);
 
     public void setEventId(T event, String eventId) {
         try {

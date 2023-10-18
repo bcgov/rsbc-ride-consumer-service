@@ -1,10 +1,12 @@
 package bcgov.rsbc.ride.kafka.events;
 
 import bcgov.rsbc.ride.kafka.factory.EtkEventHandler;
+import bcgov.rsbc.ride.kafka.models.EventRecord;
 import bcgov.rsbc.ride.kafka.models.GeolocationRequest;
 import bcgov.rsbc.ride.kafka.models.IssuanceRecord;
 import bcgov.rsbc.ride.kafka.service.GeocoderService;
 import bcgov.rsbc.ride.kafka.service.RideAdapterService;
+import io.vertx.core.json.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
@@ -39,12 +41,19 @@ public class ApproximateGeolocationEvent extends EtkEventHandler<IssuanceRecord,
                 .businessId(issuanceRecord.getTicketNumber())
                 .violationHighwayDesc(issuanceRecord.getViolationHighwayDesc())
                 .violationCityName(issuanceRecord.getViolationCityName())
+                .event(issuanceRecord.getEvent())
                 .build();
     }
 
     @Override
-    public void execute(GeolocationRequest event,String eventId) {
-        logger.info("GeolocationRequest Event received: " + event);
+    public void execute(GeolocationRequest event) {
+        String eventId = event.event().getEventId();
+        EventRecord eventRecord = event.event();
+        setEventId(event, eventId);
+        JsonObject eventPayload = JsonObject.mapFrom(event);
+        eventPayload.remove("event");
+
+        logger.info("GeolocationRequest Event received: " + eventPayload);
         BackoffConfig backoffConfig = BackoffConfig.builder()
                 .maxRetries(3)
                 .timeoutSeconds(3)
@@ -55,7 +64,8 @@ public class ApproximateGeolocationEvent extends EtkEventHandler<IssuanceRecord,
         reconService.updateMainStagingStatus(eventId,"consumer_geolocation_process");
         geocoderService.callGeocoderApi(event, eventId, backoffConfig)
                 .thenApply(geoloc -> { if (geoloc != null) logger.info("Geolocation received Successfully: " + geoloc); return geoloc; })
-                .thenAccept(geoloc -> rideAdapterService.sendData(List.of(geoloc), eventId,
-                        "gis", "geolocations", primaryKey.orElse(null), 5000));
+                .thenAccept(geoloc -> rideAdapterService.sendData(List.of(geoloc), eventId, "gis", "geolocations", primaryKey.orElse(null), 5000))
+                .thenRun(() -> rideAdapterService.sendData(List.of(eventRecord), eventId, "etk", "events", primaryKey.orElse(null), 5000));
+
     }
 }

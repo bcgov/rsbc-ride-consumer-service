@@ -1,11 +1,11 @@
 package bcgov.rsbc.ride.kafka.events;
 
 import bcgov.rsbc.ride.kafka.core.CustomObjectMapper;
-import bcgov.rsbc.ride.kafka.core.PreciseGeolocationAvroMixin;
 import bcgov.rsbc.ride.kafka.factory.EtkEventHandler;
 import bcgov.rsbc.ride.kafka.models.*;
 import bcgov.rsbc.ride.kafka.service.RideAdapterService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.vertx.core.json.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
@@ -43,20 +43,33 @@ public class GeolocationEvent extends EtkEventHandler<String, PreciseGeolocation
 
     @Override
     protected PreciseGeolocationRecord mapEvent(String preciseGeolocation) throws JsonProcessingException {
-        return customObjectMapper.getObjectMapper()
-                .addMixIn(PreciseGeolocationRecord.class, PreciseGeolocationAvroMixin.class)
-                .readValue(preciseGeolocation, PreciseGeolocationRecord.class);
+        PreciseGeolocationAdapter adapter = customObjectMapper.getObjectMapper().readValue(preciseGeolocation, PreciseGeolocationAdapter.class);
+        String eventRecorString = customObjectMapper.getObjectMapper().writeValueAsString(adapter.getEvent());
+        EventRecord eventRecord = customObjectMapper.getObjectMapper().readValue(eventRecorString, EventRecord.class);
+        PreciseGeolocationRecord preciseGeolocationRecord = new PreciseGeolocationRecord();
+        preciseGeolocationRecord.setTicketNumber(adapter.getTicket_number());
+        preciseGeolocationRecord.setServerCode(adapter.getServer_code());
+        preciseGeolocationRecord.setXValue(adapter.getX_value());
+        preciseGeolocationRecord.setYValue(adapter.getY_value());
+        preciseGeolocationRecord.setEvent(eventRecord);
+        return preciseGeolocationRecord;
     }
 
     @Override
-    public void execute(PreciseGeolocationRecord event, String eventId) {
-        logger.info("GeolocationRequest Event received: " + event);
+    public void execute(PreciseGeolocationRecord event) {
+        String eventId = event.getEvent().getEventId();
+        EventRecord eventRecord = event.getEvent();
+        setEventId(event, eventId);
+        JsonObject eventPayload = JsonObject.mapFrom(event);
+        eventPayload.remove("event");
+
+        logger.info("GeolocationRequest Event received: " + eventPayload);
 
         ApproximateGeolocationAdapter geolocation = event.getServerCode().equalsIgnoreCase("LMD") ?
                 converterUTMToWGS84.convert(event) : converterBCAlbersToWGS84.convert(event);
 
         reconService.updateMainStagingStatus(eventId,"consumer_geolocation_process");
         rideAdapterService.sendData(List.of(geolocation.toJson()), eventId, "gis","geolocations", primaryKey.orElse(null), 5000)
-                .thenRun(() -> rideAdapterService.sendData(List.of(event.getEvent()), eventId, "etk", "events", primaryKey.orElse(null), 5000));
+                .thenRun(() -> rideAdapterService.sendData(List.of(eventRecord), eventId, "etk", "events", primaryKey.orElse(null), 5000));
     }
 }

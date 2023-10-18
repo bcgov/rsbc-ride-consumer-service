@@ -30,7 +30,7 @@ public class EtkConsumerService {
             EtkEventHandler<S, T> handler = etkEventsFactory.getHadlerByEventType(eventType);
             T evt = handler.map(inputType);
             logger.info("Kafka decoded event UID: " + recordKey);
-            handler.execute(evt,recordKey);
+            handler.execute(evt);
             eventStatus=true;
             
         } catch (Exception e) {

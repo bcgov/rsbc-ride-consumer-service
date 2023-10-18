@@ -11,4 +11,5 @@ public class GeolocationRequest {
     private String businessId;
     private String violationHighwayDesc;
     private String violationCityName;
+    private EventRecord event;
 }
