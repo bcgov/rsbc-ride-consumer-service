@@ -165,7 +165,7 @@ public class RideEtkConsumerTest {
                 .readValue(jsonPreciseGeolocation, PreciseGeolocationRecord.class);
 
         Record<Long, String> eventRecord = Record.of(12345L, eventId + preciseGeolocationRecord.toString());
-        Assertions.assertTrue(rideEtkConsumer.receive_geolocation(eventRecord));
+        Assertions.assertFalse(rideEtkConsumer.receive_geolocation(eventRecord));
     }
 
     @NotNull

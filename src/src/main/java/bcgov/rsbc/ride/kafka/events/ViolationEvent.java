@@ -32,7 +32,6 @@ public class ViolationEvent extends EtkEventHandler<String, ViolationRecord>{
         setEventId(event, eventId);
         logger.info("Violation Event received: " + event);
         reconService.updateMainStagingStatus(eventId,"consumer_process");
-        rideAdapterService.sendData(List.of(event), eventId,
-                "etk", "violations", primaryKey.orElse(null), 5000);
+        rideAdapterService.sendData(List.of(event), eventId, "etk", "violations", primaryKey.orElse(null), 5000);
     }
 }

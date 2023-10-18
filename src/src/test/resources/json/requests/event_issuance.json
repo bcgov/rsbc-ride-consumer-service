@@ -33,6 +33,10 @@
   "enforcement_officer_name":"222",
   "sent_date":"2023-08-15",
   "enforcement_org_unit_cd":"222",
-  "enforcement_org_unit_cd_txt":"222"
-
+  "enforcement_org_unit_cd_txt":"222",
+  "event": {
+    "event_id": 12345,
+    "event_version": 222,
+    "event_date_time": "2022-01-01"
+  }
 }
