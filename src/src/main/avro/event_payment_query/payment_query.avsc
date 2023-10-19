@@ -31,15 +31,19 @@
                 "name": "EventRecord",
                 "fields": [
                   {
-                    "name": "event_id",
+                    "name": "id",
                     "type": "string"
                   },
                   {
-                    "name": "event_version",
+                    "name": "version",
                     "type": "string"
                   },
                   {
-                    "name": "event_date_time",
+                    "name": "date_time",
+                    "type": "string"
+                  },
+                  {
+                    "name": "type",
                     "type": "string"
                   }
                 ]

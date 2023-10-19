@@ -1,21 +1,25 @@
 package bcgov.rsbc.ride.kafka.events;
 
+import bcgov.rsbc.ride.kafka.converter.ConverterBCAlbersToWGS84;
+import bcgov.rsbc.ride.kafka.converter.ConverterUTMToWGS84;
 import bcgov.rsbc.ride.kafka.core.CustomObjectMapper;
 import bcgov.rsbc.ride.kafka.factory.EtkEventHandler;
-import bcgov.rsbc.ride.kafka.models.*;
+import bcgov.rsbc.ride.kafka.models.ApproximateGeolocationAdapter;
+import bcgov.rsbc.ride.kafka.models.EventRecord;
+import bcgov.rsbc.ride.kafka.models.PreciseGeolocationAdapter;
+import bcgov.rsbc.ride.kafka.models.PreciseGeolocationRecord;
+import bcgov.rsbc.ride.kafka.service.ReconService;
 import bcgov.rsbc.ride.kafka.service.RideAdapterService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.vertx.core.json.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
-import bcgov.rsbc.ride.kafka.service.ReconService;
-import bcgov.rsbc.ride.kafka.converter.ConverterBCAlbersToWGS84;
-import bcgov.rsbc.ride.kafka.converter.ConverterUTMToWGS84;
 
 @Slf4j
 @ApplicationScoped
@@ -57,7 +61,7 @@ public class GeolocationEvent extends EtkEventHandler<String, PreciseGeolocation
 
     @Override
     public void execute(PreciseGeolocationRecord event) {
-        String eventId = event.getEvent().getEventId();
+        String eventId = event.getEvent().getId();
         EventRecord eventRecord = event.getEvent();
         setEventId(event, eventId);
         JsonObject eventPayload = JsonObject.mapFrom(event);
