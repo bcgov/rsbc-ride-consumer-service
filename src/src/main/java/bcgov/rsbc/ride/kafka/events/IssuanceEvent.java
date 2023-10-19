@@ -3,16 +3,17 @@ package bcgov.rsbc.ride.kafka.events;
 import bcgov.rsbc.ride.kafka.factory.EtkEventHandler;
 import bcgov.rsbc.ride.kafka.models.EventRecord;
 import bcgov.rsbc.ride.kafka.models.IssuanceRecord;
+import bcgov.rsbc.ride.kafka.service.ReconService;
 import bcgov.rsbc.ride.kafka.service.RideAdapterService;
 import io.vertx.core.json.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
-import bcgov.rsbc.ride.kafka.service.ReconService;
 
 @Slf4j
 @ApplicationScoped
@@ -34,7 +35,7 @@ public class IssuanceEvent extends EtkEventHandler<String,IssuanceRecord> {
 
     @Override
     public void execute(IssuanceRecord event) {
-        String eventId = event.getEvent().getEventId();
+        String eventId = event.getEvent().getId();
         EventRecord eventRecord = event.getEvent();
         setEventId(event, eventId);
         JsonObject eventPayload = JsonObject.mapFrom(event);
