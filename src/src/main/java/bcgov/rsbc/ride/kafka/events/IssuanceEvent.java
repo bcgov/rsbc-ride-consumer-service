@@ -3,6 +3,7 @@ package bcgov.rsbc.ride.kafka.events;
 import bcgov.rsbc.ride.kafka.factory.EtkEventHandler;
 import bcgov.rsbc.ride.kafka.models.EventRecord;
 import bcgov.rsbc.ride.kafka.models.IssuanceRecord;
+import bcgov.rsbc.ride.kafka.models.ViolationCountRecord;
 import bcgov.rsbc.ride.kafka.service.ReconService;
 import bcgov.rsbc.ride.kafka.service.RideAdapterService;
 import io.vertx.core.json.JsonObject;
@@ -37,15 +38,19 @@ public class IssuanceEvent extends EtkEventHandler<String,IssuanceRecord> {
     public void execute(IssuanceRecord event) {
         String eventId = event.getEvent().getId();
         EventRecord eventRecord = event.getEvent();
+        List<ViolationCountRecord> counts = event.getCounts();
         setEventId(event, eventId);
         JsonObject eventPayload = JsonObject.mapFrom(event);
-        eventPayload.remove("event");
 
-        logger.info("Issuance Event received: " + eventPayload);
+        logger.info("Issuance Event received: \n" + eventPayload);
+
+        eventPayload.remove("event");
+        eventPayload.remove("counts");
+
         reconService.updateMainStagingStatus(eventId,"consumer_process");
         rideAdapterService.sendData(List.of(eventPayload), eventId, "etk", "issuances", primaryKey.orElse(null), 5000)
-                .thenRun(() -> rideAdapterService.sendData(List.of(event.getCounts()), eventId, "etk", "violations", primaryKey.orElse(null), 5000))
-                .thenRun(() -> approximateGeolocationEvent.execute(approximateGeolocationEvent.map(event)))
-                .thenRun(() -> rideAdapterService.sendData(List.of(eventRecord), eventId, "etk", "events", primaryKey.orElse(null), 5000));
+                .thenRun(() -> rideAdapterService.sendData(counts, eventId, "etk", "violations", primaryKey.orElse(null), 5000))
+                .thenRun(() -> rideAdapterService.sendData(List.of(eventRecord), eventId, "etk", "events", primaryKey.orElse(null), 5000))
+                .thenRun(() -> approximateGeolocationEvent.execute(approximateGeolocationEvent.map(event)));
     }
 }

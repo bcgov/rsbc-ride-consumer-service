@@ -48,13 +48,15 @@ public class ApproximateGeolocationEvent extends EtkEventHandler<IssuanceRecord,
 
     @Override
     public void execute(GeolocationRequest event) {
+        logger.info("GeolocationRequest Event received: " + event);
+
         String eventId = event.event().getId();
         EventRecord eventRecord = event.event();
         setEventId(event, eventId);
         JsonObject eventPayload = JsonObject.mapFrom(event);
+
         eventPayload.remove("event");
 
-        logger.info("GeolocationRequest Event received: " + eventPayload);
         BackoffConfig backoffConfig = BackoffConfig.builder()
                 .maxRetries(3)
                 .timeoutSeconds(3)
