@@ -10,6 +10,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
@@ -34,7 +35,7 @@ public class RideAdapterService {
 
 
     @WithSpan
-    public CompletableFuture<HttpResponse<Buffer>> sendData(List<Object> persistenceList, String eventId, String schema, String tableName,
+    public CompletableFuture<HttpResponse<Buffer>> sendData(List<?> persistenceList, String eventId, String schema, String tableName,
                                                             List<String> primaryKey, int timeoutMilliseconds) {
 
         WebClient webClient = WebClient.create(vertx);
@@ -81,7 +82,7 @@ public class RideAdapterService {
     }
 
 
-    private JSONObject getPayload(List<Object> persistenceList, String eventId, String schema, String tableName, List<String> primaryKey) {
+    private JSONObject getPayload(List<?> persistenceList, String eventId, String schema, String tableName, List<String> primaryKey) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("tablename", tableName);
         jsonObject.put("schema", schema);

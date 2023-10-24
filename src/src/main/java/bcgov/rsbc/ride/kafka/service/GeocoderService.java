@@ -2,6 +2,7 @@ package bcgov.rsbc.ride.kafka.service;
 
 import bcgov.rsbc.ride.kafka.models.ApproximateGeolocationRecord;
 import bcgov.rsbc.ride.kafka.models.GeolocationRequest;
+import bcgov.rsbc.ride.kafka.service.BackoffExecution.BackoffConfig;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
@@ -11,14 +12,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 import org.json.JSONObject;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import static java.util.Base64.getEncoder;
-import bcgov.rsbc.ride.kafka.service.BackoffExecution.BackoffConfig;
 
 @Slf4j
 @ApplicationScoped
@@ -56,7 +58,7 @@ public class GeocoderService {
         logger.info("Calling Geocoder API with address: " + address + ", eventId: " + eventId);
 
         CompletableFuture<HttpResponse<Buffer>> responseFuture =
-                backoffExecution.executionWithRetry(eventId,
+                backoffExecution.executionWithRetry("callGeocoderApi for event id " + eventId,
                         () -> webClient.get(PORT, HOST, URI)
                                 .putHeader("Content-Type", "application/json")
                                 .putHeader("Authorization", "Basic " + getEncodedCredentials())
@@ -90,6 +92,9 @@ public class GeocoderService {
                 geolocation.setDatabcPrecision(dataBc.getString("precision"));
                 geolocation.setFullAddress(dataBc.getString("fullAddress"));
                 geolocation.setFaults(dataBc.getJSONArray("faults").toString());
+
+                logger.info("Successful callGeocoderApi returning: " + geolocation + ", eventId: " + eventId);
+
                 return geolocation;
             }
             catch (Exception e) {

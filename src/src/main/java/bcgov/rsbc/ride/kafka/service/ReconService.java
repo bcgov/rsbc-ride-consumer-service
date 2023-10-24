@@ -8,11 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 import org.json.simple.JSONObject;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
-import java.util.List;
 
 @Slf4j
 @ApplicationScoped
@@ -34,7 +35,7 @@ public class ReconService {
 
         WebClient webClient = WebClient.create(vertx);
         JSONObject payload = getStatusUpdPayload(eventId,statusVal);
-        logger.info("Calling Recon service status update with payload: " + payload);
+        logger.info("Calling Recon service status update for eventId " + eventId + " with payload: \n" + payload);
 //        concatenate eventid to string
         String apiPath="/updateevent/"+eventId;
 
@@ -51,7 +52,7 @@ public class ReconService {
     }
 
     private JSONObject getStatusUpdPayload(String eventId,String statusVal) {
-        JSONObject payloadobj=new JSONObject();
+        JSONObject payloadobj = new JSONObject();
         payloadobj.put("messageStatus",statusVal);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("collectionName", "mainstaging");
