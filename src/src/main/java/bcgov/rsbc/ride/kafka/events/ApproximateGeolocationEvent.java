@@ -47,7 +47,7 @@ public class ApproximateGeolocationEvent extends EtkEventHandler<IssuanceRecord,
     }
 
     @Override
-    public void execute(GeolocationRequest event) {
+    public void execute(GeolocationRequest event, String key) {
         logger.info("GeolocationRequest Event received: " + event);
 
         String eventId = event.event().getId();
@@ -56,6 +56,7 @@ public class ApproximateGeolocationEvent extends EtkEventHandler<IssuanceRecord,
         JsonObject eventPayload = JsonObject.mapFrom(event);
 
         eventPayload.remove("event");
+        String rideEvtID=key;
 
         BackoffConfig backoffConfig = BackoffConfig.builder()
                 .maxRetries(3)
@@ -64,11 +65,11 @@ public class ApproximateGeolocationEvent extends EtkEventHandler<IssuanceRecord,
                 .maxDelayMilliseconds(15000) // 15 seconds max delay
                 .build();
 
-        reconService.updateMainStagingStatus(eventId,"consumer_geolocation_process");
-        geocoderService.callGeocoderApi(event, eventId, backoffConfig)
+        reconService.updateMainStagingStatus(rideEvtID,"consumer_geolocation_process");
+        geocoderService.callGeocoderApi(event, rideEvtID, backoffConfig)
                 .thenApply(geoloc -> { if (geoloc != null) logger.info("Geolocation received Successfully: " + geoloc); return geoloc; })
-                .thenAccept(geoloc -> rideAdapterService.sendData(List.of(geoloc), eventId, "gis", "geolocations", primaryKey.orElse(null), 5000))
-                .thenRun(() -> rideAdapterService.sendData(List.of(eventRecord), eventId, "etk", "events", primaryKey.orElse(null), 5000));
+                .thenAccept(geoloc -> rideAdapterService.sendData(List.of(geoloc), rideEvtID, "gis", "geolocations", primaryKey.orElse(null), 5000))
+                .thenRun(() -> rideAdapterService.sendData(List.of(eventRecord), rideEvtID, "etk", "events", primaryKey.orElse(null), 5000));
 
     }
 }

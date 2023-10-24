@@ -31,16 +31,17 @@ public class DisputeUpdateEvent extends EtkEventHandler<String, DisputeUpdateRec
     Optional<List<String>> primaryKey;
 
     @Override
-    public void execute(DisputeUpdateRecord event) {
+    public void execute(DisputeUpdateRecord event, String key) {
         String eventId = event.getEvent().getId();
         EventRecord eventRecord = event.getEvent();
         setEventId(event, eventId);
         JsonObject eventPayload = JsonObject.mapFrom(event);
         eventPayload.remove("event");
+        String rideEvtID=key;
 
         logger.info("Dispute Update Event received: " + eventPayload);
         reconService.updateMainStagingStatus(eventId,"consumer_process");
-        rideAdapterService.sendData(List.of(eventPayload), eventId, "etk", "dispute_status_updates", primaryKey.orElse(null), 5000)
-                .thenRun(() -> rideAdapterService.sendData(List.of(eventRecord), eventId, "etk", "events", primaryKey.orElse(null), 5000));
+        rideAdapterService.sendData(List.of(eventPayload), rideEvtID, "etk", "dispute_status_updates", primaryKey.orElse(null), 5000)
+                .thenRun(() -> rideAdapterService.sendData(List.of(eventRecord), rideEvtID, "etk", "events", primaryKey.orElse(null), 5000));
     }
 }

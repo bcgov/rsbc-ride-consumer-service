@@ -60,20 +60,21 @@ public class GeolocationEvent extends EtkEventHandler<String, PreciseGeolocation
     }
 
     @Override
-    public void execute(PreciseGeolocationRecord event) {
+    public void execute(PreciseGeolocationRecord event, String key) {
         String eventId = event.getEvent().getId();
         EventRecord eventRecord = event.getEvent();
         setEventId(event, eventId);
         JsonObject eventPayload = JsonObject.mapFrom(event);
         eventPayload.remove("event");
+        String rideEvtID=key;
 
         logger.info("GeolocationRequest Event received: " + eventPayload);
 
         ApproximateGeolocationAdapter geolocation = event.getServerCode().equalsIgnoreCase("LMD") ?
                 converterUTMToWGS84.convert(event) : converterBCAlbersToWGS84.convert(event);
 
-        reconService.updateMainStagingStatus(eventId,"consumer_geolocation_process");
-        rideAdapterService.sendData(List.of(geolocation.toJson()), eventId, "gis","geolocations", primaryKey.orElse(null), 5000)
-                .thenRun(() -> rideAdapterService.sendData(List.of(eventRecord), eventId, "etk", "events", primaryKey.orElse(null), 5000));
+        reconService.updateMainStagingStatus(rideEvtID,"consumer_geolocation_process");
+        rideAdapterService.sendData(List.of(geolocation.toJson()), rideEvtID, "gis","geolocations", primaryKey.orElse(null), 5000)
+                .thenRun(() -> rideAdapterService.sendData(List.of(eventRecord), rideEvtID, "etk", "events", primaryKey.orElse(null), 5000));
     }
 }

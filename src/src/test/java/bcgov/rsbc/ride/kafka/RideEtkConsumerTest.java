@@ -103,7 +103,7 @@ public class RideEtkConsumerTest {
 
         assertThrows(Exception.class, () ->{
             ApproximateGeolocationEvent approximateGeolocationEvent = new ApproximateGeolocationEvent();
-            approximateGeolocationEvent.execute(approximateGeolocationEvent.map(issuanceRecord));
+            approximateGeolocationEvent.execute(approximateGeolocationEvent.map(issuanceRecord),eventId);
         });
 
         Assertions.assertTrue(rideEtkConsumer.receive(

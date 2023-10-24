@@ -35,7 +35,7 @@ public class IssuanceEvent extends EtkEventHandler<String,IssuanceRecord> {
     Optional<List<String>> primaryKey;
 
     @Override
-    public void execute(IssuanceRecord event) {
+    public void execute(IssuanceRecord event, String key) {
         String eventId = event.getEvent().getId();
         EventRecord eventRecord = event.getEvent();
         List<ViolationCountRecord> counts = event.getCounts();
@@ -46,11 +46,12 @@ public class IssuanceEvent extends EtkEventHandler<String,IssuanceRecord> {
 
         eventPayload.remove("event");
         eventPayload.remove("counts");
+        String rideEvtID=key;
 
-        reconService.updateMainStagingStatus(eventId,"consumer_process");
-        rideAdapterService.sendData(List.of(eventPayload), eventId, "etk", "issuances", primaryKey.orElse(null), 5000)
-                .thenRun(() -> rideAdapterService.sendData(counts, eventId, "etk", "violations", primaryKey.orElse(null), 5000))
-                .thenRun(() -> rideAdapterService.sendData(List.of(eventRecord), eventId, "etk", "events", primaryKey.orElse(null), 5000))
-                .thenRun(() -> approximateGeolocationEvent.execute(approximateGeolocationEvent.map(event)));
+        reconService.updateMainStagingStatus(rideEvtID,"consumer_process");
+        rideAdapterService.sendData(List.of(eventPayload), rideEvtID, "etk", "issuances", primaryKey.orElse(null), 5000)
+                .thenRun(() -> rideAdapterService.sendData(counts, rideEvtID, "etk", "violations", primaryKey.orElse(null), 5000))
+                .thenRun(() -> rideAdapterService.sendData(List.of(eventRecord), rideEvtID, "etk", "events", primaryKey.orElse(null), 5000))
+                .thenRun(() -> approximateGeolocationEvent.execute(approximateGeolocationEvent.map(event), key));
     }
 }

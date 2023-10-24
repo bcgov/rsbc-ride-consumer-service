@@ -31,16 +31,18 @@ public class ViolationEvent extends EtkEventHandler<String, ViolationRecord>{
     Optional<List<String>> primaryKey;
 
     @Override
-    public void execute(ViolationRecord event) {
+    public void execute(ViolationRecord event, String key) {
         String eventId = event.getEvent().getId();
         EventRecord eventRecord = event.getEvent();
         setEventId(event, eventId);
         JsonObject eventPayload = JsonObject.mapFrom(event);
         eventPayload.remove("event");
 
+        String rideEvtID=key;
+
         logger.info("Violation Event received: " + eventPayload);
-        reconService.updateMainStagingStatus(eventId,"consumer_process");
-        rideAdapterService.sendData(List.of(eventPayload), eventId, "etk", "violations", primaryKey.orElse(null), 5000)
-                .thenRun(() -> rideAdapterService.sendData(List.of(eventRecord), eventId, "etk", "events", primaryKey.orElse(null), 5000));
+        reconService.updateMainStagingStatus(rideEvtID,"consumer_process");
+        rideAdapterService.sendData(List.of(eventPayload), rideEvtID, "etk", "violations", primaryKey.orElse(null), 5000)
+                .thenRun(() -> rideAdapterService.sendData(List.of(eventRecord), rideEvtID, "etk", "events", primaryKey.orElse(null), 5000));
     }
 }
