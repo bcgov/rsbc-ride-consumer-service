@@ -36,6 +36,9 @@ public class ApproximateGeolocationEvent extends EtkEventHandler<IssuanceRecord,
     @ConfigProperty(name = "ride.adapter.primarykey.geolocation")
     Optional<List<String>> primaryKey;
 
+    @ConfigProperty(name = "ride.adapter.primarykey.events")
+    Optional<List<String>> evtprimaryKey;
+
     @Override
     protected GeolocationRequest mapEvent(IssuanceRecord issuanceRecord) {
         return GeolocationRequest.builder()
@@ -69,7 +72,7 @@ public class ApproximateGeolocationEvent extends EtkEventHandler<IssuanceRecord,
         geocoderService.callGeocoderApi(event, rideEvtID, backoffConfig)
                 .thenApply(geoloc -> { if (geoloc != null) logger.info("Geolocation received Successfully: " + geoloc); return geoloc; })
                 .thenAccept(geoloc -> rideAdapterService.sendData(List.of(geoloc), rideEvtID, "gis", "geolocations", primaryKey.orElse(null), 5000))
-                .thenRun(() -> rideAdapterService.sendData(List.of(eventRecord), rideEvtID, "etk", "events", primaryKey.orElse(null), 5000));
+                .thenRun(() -> rideAdapterService.sendData(List.of(eventRecord), rideEvtID, "etk", "events", evtprimaryKey.orElse(null), 5000));
 
     }
 }

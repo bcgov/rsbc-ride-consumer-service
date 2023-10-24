@@ -30,6 +30,9 @@ public class DisputeUpdateEvent extends EtkEventHandler<String, DisputeUpdateRec
     @ConfigProperty(name = "ride.adapter.primarykey.disputeupdate")
     Optional<List<String>> primaryKey;
 
+    @ConfigProperty(name = "ride.adapter.primarykey.events")
+    Optional<List<String>> evtprimaryKey;
+
     @Override
     public void execute(DisputeUpdateRecord event, String key) {
         String eventId = event.getEvent().getId();
@@ -42,6 +45,6 @@ public class DisputeUpdateEvent extends EtkEventHandler<String, DisputeUpdateRec
         logger.info("Dispute Update Event received: " + eventPayload);
         reconService.updateMainStagingStatus(eventId,"consumer_process");
         rideAdapterService.sendData(List.of(eventPayload), rideEvtID, "etk", "dispute_status_updates", primaryKey.orElse(null), 5000)
-                .thenRun(() -> rideAdapterService.sendData(List.of(eventRecord), rideEvtID, "etk", "events", primaryKey.orElse(null), 5000));
+                .thenRun(() -> rideAdapterService.sendData(List.of(eventRecord), rideEvtID, "etk", "events", evtprimaryKey.orElse(null), 5000));
     }
 }

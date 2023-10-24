@@ -45,6 +45,9 @@ public class GeolocationEvent extends EtkEventHandler<String, PreciseGeolocation
     @ConfigProperty(name = "ride.adapter.primarykey.geolocation")
     Optional<List<String>> primaryKey;
 
+    @ConfigProperty(name = "ride.adapter.primarykey.events")
+    Optional<List<String>> evtprimaryKey;
+
     @Override
     protected PreciseGeolocationRecord mapEvent(String preciseGeolocation) throws JsonProcessingException {
         PreciseGeolocationAdapter adapter = customObjectMapper.getObjectMapper().readValue(preciseGeolocation, PreciseGeolocationAdapter.class);
@@ -75,6 +78,6 @@ public class GeolocationEvent extends EtkEventHandler<String, PreciseGeolocation
 
         reconService.updateMainStagingStatus(rideEvtID,"consumer_geolocation_process");
         rideAdapterService.sendData(List.of(geolocation.toJson()), rideEvtID, "gis","geolocations", primaryKey.orElse(null), 5000)
-                .thenRun(() -> rideAdapterService.sendData(List.of(eventRecord), rideEvtID, "etk", "events", primaryKey.orElse(null), 5000));
+                .thenRun(() -> rideAdapterService.sendData(List.of(eventRecord), rideEvtID, "etk", "events", evtprimaryKey.orElse(null), 5000));
     }
 }
