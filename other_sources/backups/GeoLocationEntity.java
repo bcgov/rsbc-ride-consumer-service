@@ -24,6 +24,12 @@ import jakarta.persistence.Entity;
  * }
  */
 @Entity
-public class MyEntity extends PanacheEntity {
-    public String field;
+public class GeoLocationEntity extends PanacheEntity {
+    public String lat;
+    public String lng;
+    public String databc_long;
+    public String databc_lat;
+
+    public String business_id;
+
 }
