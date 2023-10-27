@@ -48,3 +48,5 @@ nb-configuration.xml
 
 # Ignore Gradle build output directory
 build
+.idea
+appenv
