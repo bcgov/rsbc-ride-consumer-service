@@ -19,6 +19,8 @@ db_password=os.environ.get('DB_PASSWORD')
 db_name=os.environ.get('DB_NAME')
 table_name=os.environ.get('TABLE_NAME')
 
+tmp_folder=os.environ.get('TMP_FOLDER','')
+
 numeric_level = getattr(logging, os.getenv('LOG_LEVEL').upper(), 10)
 # Set up logging
 logging.basicConfig(
@@ -71,16 +73,72 @@ def data_update_from_csv():
         return False
     for row in reader:
         try:
-            logging.debug("Processing row: %s", row)
+            logging.info(f"Processing row: {row['ticket']}")
+            logging.debug("Row Details: %s", row)
             # print("date:", row['date'])
             # print("ticket:", row['ticket'])
             # print("lat:", row['lat'])
             # print("long:", row['long'])
             # print("------")  # Separator for clarity
             db_updates(row)
+            logging.info(f"Row processed: {row['ticket']}")
+            # update to minio bucket for processed records to a csv file
+            processed_csv_file_name = f'{tmp_folder}processed-{csv_file_name}'
+            write_csv_records(row,processed_csv_file_name,reader.fieldnames)
+            # read file in csv_data
+            with open(processed_csv_file_name, 'rb') as file_data:
+                file_stat = os.stat(processed_csv_file_name)
+                minio_client.put_object(
+                    bucket_name, 
+                    processed_csv_file_name, 
+                    file_data, 
+                    file_stat.st_size
+                )
+                # csv_data = f.read()
+                # csv_data = StringIO(bytes(f.read(),'utf-8'))
+
+
+            # csv_data = open(processed_csv_file_name, 'r')
+            # csv_data = csv_data.read()
+            # csv_data = StringIO(csv_data)
+            # csv_data = StringIO(csv_data)
+
+            # csv_data = StringIO()
+            # csv_writer = csv.DictWriter(csv_data, fieldnames=reader.fieldnames)
+            # csv_writer.writeheader()
+            # csv_writer.writerow(row)
+            # csv_data.seek(0)
+            # upload processed_csv_file_name file to minio
+            # minio_client.put_object(bucket_name, processed_csv_file_name, csv_data.getvalue(), len(csv_data.getvalue()))
+            
+            logging.info(f"Processed row: {row['ticket']} updated to minio bucket")
+
+            logging.info("------------------")
         except Exception as e:
             logging.error(f"Error while processing row: {row['ticket']}")
             logging.error(e)
+            logging.info("------------------")
+    # remove file
+    try:
+        os.remove(processed_csv_file_name)
+    except Exception as e:
+        logging.error(f"Error while removing file: {processed_csv_file_name}")
+        logging.error(e)
+    logging.info("Process completed to update data from csv file")
+
+def write_csv_records(row,csv_file_name,headers):
+    try:
+        with open(csv_file_name, 'r') as f:
+            pass
+    except FileNotFoundError:
+        # Create the file and write the headers if it doesn't exist
+        with open(csv_file_name, 'w') as f:
+            writer = csv.DictWriter(f, fieldnames=headers)
+            writer.writeheader()
+    with open(csv_file_name, 'a') as f:
+        writer = csv.DictWriter(f, fieldnames=headers)
+        writer.writerow(row)
+
 
 if __name__ == "__main__":
     # valstr='123456789'
