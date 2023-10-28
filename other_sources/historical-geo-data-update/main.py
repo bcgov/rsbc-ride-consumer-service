@@ -117,10 +117,22 @@ def data_update_from_csv():
         except Exception as e:
             logging.error(f"Error while processing row: {row['ticket']}")
             logging.error(e)
+            error_csv_file_name = f'{tmp_folder}errors-{csv_file_name}'
+            write_csv_records(row, error_csv_file_name, reader.fieldnames)
+            # read file in csv_data
+            with open(error_csv_file_name, 'rb') as file_data:
+                file_stat = os.stat(error_csv_file_name)
+                minio_client.put_object(
+                    bucket_name,
+                    error_csv_file_name,
+                    file_data,
+                    file_stat.st_size
+                )
             logging.info("------------------")
     # remove file
     try:
         os.remove(processed_csv_file_name)
+        os.remove(error_csv_file_name)
     except Exception as e:
         logging.error(f"Error while removing file: {processed_csv_file_name}")
         logging.error(e)
