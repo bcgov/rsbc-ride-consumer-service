@@ -1,0 +1,1 @@
+{"schema":"gis","eventid":"12345","data":[{"ticket_number": "EA60137788", "server_code": "nse", "x_value": null, "y_value": null, "event": {"id": "12345", "version": null, "date_time": null, "type": null}}],"destination":"bi","source":"etk_consumer","tablename":"geolocations"}

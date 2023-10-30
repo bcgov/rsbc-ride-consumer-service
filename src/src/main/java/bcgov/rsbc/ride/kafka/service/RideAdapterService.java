@@ -45,8 +45,6 @@ public class RideAdapterService {
             if (payloadString.contains("violationformnumber")) {
                 payloadString = payloadString.replace("violationformnumber", "e_violation_form_number");
                 JSONParser parser = new JSONParser();
-//                JSONObject json1 = (JSONObject) parser.parse(payloadString);
-//                payload = json1;
                 payload = (JSONObject) parser.parse(payloadString);
             }
         } catch (Exception e) {
@@ -82,7 +80,7 @@ public class RideAdapterService {
     }
 
 
-    private JSONObject getPayload(List<?> persistenceList, String eventId, String schema, String tableName, List<String> primaryKey) {
+    public JSONObject getPayload(List<?> persistenceList, String eventId, String schema, String tableName, List<String> primaryKey) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("tablename", tableName);
         jsonObject.put("schema", schema);

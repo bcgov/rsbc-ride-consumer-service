@@ -71,7 +71,7 @@ public class RideEtkConsumerTest {
         mockingReconUpdateMainStagingStatus(eventId);
 
         Assertions.assertTrue(rideEtkConsumer.receive_dispute(
-                getLongStringRecord(eventId, getFileContent("json/requests/event_dispute.json"),
+                getLongStringRecord(eventId, getFileContent("json/requests/dbadapter/event_dispute.json"),
                         DisputeRecord.class)));
     }
 
@@ -83,7 +83,7 @@ public class RideEtkConsumerTest {
         mockingReconUpdateMainStagingStatus(eventId);
 
         Assertions.assertTrue(rideEtkConsumer.receive_disputeupdate(
-                getLongStringRecord(eventId, getFileContent("json/requests/event_dispute_update.json"),
+                getLongStringRecord(eventId, getFileContent("json/requests/dbadapter/event_dispute_update.json"),
                         DisputeUpdateRecord.class)));
     }
 
@@ -92,7 +92,7 @@ public class RideEtkConsumerTest {
         String eventId = "12345";
         String address = "1000 W 71st Ave, Vancouver, BC";
         String mockFileLocation = "json/response/geolocation-response.json";
-        String eventString = getFileContent("json/requests/event_issuance.json");
+        String eventString = getFileContent("json/requests/dbadapter/event_issuance.json");
 
         mockingRideDbAdapter();
         mockingSendErrorRecords(eventId);
@@ -103,11 +103,11 @@ public class RideEtkConsumerTest {
 
         assertThrows(Exception.class, () ->{
             ApproximateGeolocationEvent approximateGeolocationEvent = new ApproximateGeolocationEvent();
-            approximateGeolocationEvent.execute(approximateGeolocationEvent.map(issuanceRecord),eventId);
+            approximateGeolocationEvent.execute(approximateGeolocationEvent.map(issuanceRecord), eventId);
         });
 
         Assertions.assertTrue(rideEtkConsumer.receive(
-                getLongStringRecord(eventId, getFileContent("json/requests/event_issuance.json"),
+                getLongStringRecord(eventId, getFileContent("json/requests/dbadapter/event_issuance.json"),
                         IssuanceRecord.class)));
     }
 
@@ -119,7 +119,7 @@ public class RideEtkConsumerTest {
         mockingReconUpdateMainStagingStatus(eventId);
 
         Assertions.assertTrue(rideEtkConsumer.receive_payment(
-                getLongStringRecord(eventId, getFileContent("json/requests/event_payment.json"),
+                getLongStringRecord(eventId, getFileContent("json/requests/dbadapter/event_payment.json"),
                         PaymentRecord.class)));
     }
 
@@ -131,7 +131,7 @@ public class RideEtkConsumerTest {
         mockingReconUpdateMainStagingStatus(eventId);
 
         Assertions.assertTrue(rideEtkConsumer.receive_payquery(
-                getLongStringRecord(eventId, getFileContent("json/requests/event_payment_query.json"),
+                getLongStringRecord(eventId, getFileContent("json/requests/dbadapter/event_payment_query.json"),
                         PaymentQueryRecord.class)));
     }
 
@@ -143,7 +143,7 @@ public class RideEtkConsumerTest {
         mockingReconUpdateMainStagingStatus(eventId);
 
         Assertions.assertTrue(rideEtkConsumer.receive_violations(
-                getLongStringRecord(eventId, getFileContent("json/requests/event_violations.json"),
+                getLongStringRecord(eventId, getFileContent("json/requests/dbadapter/event_violations.json"),
                         ViolationRecord.class)));
     }
 
@@ -152,7 +152,7 @@ public class RideEtkConsumerTest {
         String eventId = "12345";
         String address = "1000 W 71st Ave, Vancouver, BC";
         String mockFileLocation = "json/response/geolocation-response.json";
-        String jsonPreciseGeolocation = getFileContent("json/requests/event_geolocation.json");
+        String jsonPreciseGeolocation = getFileContent("json/requests/dbadapter/event_geolocation.json");
 
         mockingRideDbAdapter();
         mockingSendErrorRecords(eventId);

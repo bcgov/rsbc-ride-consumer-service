@@ -39,6 +39,7 @@ nb-configuration.xml
 
 .run
 
+/out/
 /.idea/runConfigurations/
 /.idea/modules/
 /.idea/
