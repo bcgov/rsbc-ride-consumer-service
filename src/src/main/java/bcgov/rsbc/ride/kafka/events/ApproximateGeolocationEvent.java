@@ -61,6 +61,7 @@ public class ApproximateGeolocationEvent extends EtkEventHandler<IssuanceRecord,
         eventPayload.remove("event");
         String rideEvtID=key;
 
+        logger.info("GeolocationRequest Event received: " + eventPayload);
         BackoffConfig backoffConfig = BackoffConfig.builder()
                 .maxRetries(3)
                 .timeoutSeconds(3)

@@ -28,8 +28,14 @@ public class ConverterUTMToWGS84 {
         ProjCoordinate utmCoord = new ProjCoordinate(Double.parseDouble(easting), Double.parseDouble(northing));
         utmCrs.getProjection().inverseProject(utmCoord, latLongCoord);
 
-        double latitude = latLongCoord.y;
-        double longitude = latLongCoord.x;
+        String originalLatitude = String.valueOf(latLongCoord.y);
+        String originalLongitude = String.valueOf(latLongCoord.x);
+
+        String latitude = originalLatitude.substring(0, Math.min(originalLatitude.length(), 15));
+        String longitude = originalLongitude.substring(0, Math.min(originalLongitude.length(), 15));
+
+        log.debug("Original latitude: {}; trimmed latitude up to 15 characters: {}", originalLatitude, latitude);
+        log.debug("Original longitude: {}; trimmed longitude up to 15 characters: {}", originalLongitude, longitude);
 
         // Create a Google Maps URL with the converted latitude, longitude, and UTM zone
         log.info("Google Maps URL: http://maps.google.com/maps?f=q&hl=en&geocode=&q=" + latitude + "," + longitude +
@@ -39,8 +45,8 @@ public class ConverterUTMToWGS84 {
                 .business_program("ETK")
                 .business_type("violation")
                 .business_id(event.getTicketNumber())
-                .long$(String.valueOf(longitude))
-                .lat(String.valueOf(latitude))
+                .long$(longitude)
+                .lat(latitude)
                 .requested_address("")
                 .submitted_address("")
                 .full_address("")
