@@ -30,8 +30,18 @@ public class ConverterBCAlbersToWGS84{
         ProjCoordinate wgs84Coord = new ProjCoordinate();
         transform.transform(albersCoord, wgs84Coord);
 
-        double latitude = wgs84Coord.y;
-        double longitude = wgs84Coord.x;
+        // double latitude = wgs84Coord.y;
+        // double longitude = wgs84Coord.x;
+
+        String originalLatitude = String.valueOf(wgs84Coord.y);
+        String originalLongitude = String.valueOf(wgs84Coord.x);
+
+        String latitude = originalLatitude.substring(0, Math.min(originalLatitude.length(), 15));
+        String longitude = originalLongitude.substring(0, Math.min(originalLongitude.length(), 15));
+
+        log.debug("Original latitude: {}; trimmed latitude up to 15 characters: {}", originalLatitude, latitude);
+        log.debug("Original longitude: {}; trimmed longitude up to 15 characters: {}", originalLongitude, longitude);
+
 
         // Create Google Maps URL
         log.info("Google Maps URL: http://maps.google.com/maps?f=q&hl=en&geocode=&q=" + latitude + "," + longitude +
@@ -41,8 +51,10 @@ public class ConverterBCAlbersToWGS84{
                 .business_program("ETK")
                 .business_type("violation")
                 .business_id(event.getTicketNumber())
-                .long$(String.valueOf(longitude))
-                .lat(String.valueOf(latitude))
+                // .long$(String.valueOf(longitude))
+                // .lat(String.valueOf(latitude))
+                .long$(longitude)
+                .lat(latitude)
                 .requested_address("")
                 .submitted_address("")
                 .full_address("")
