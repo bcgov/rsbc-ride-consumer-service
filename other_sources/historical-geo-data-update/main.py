@@ -75,6 +75,7 @@ def data_update_from_csv():
         try:
             logging.info(f"Processing row: {row['ticket']}")
             logging.debug("Row Details: %s", row)
+            errFlag = False
             # print("date:", row['date'])
             # print("ticket:", row['ticket'])
             # print("lat:", row['lat'])
@@ -84,6 +85,7 @@ def data_update_from_csv():
             logging.info(f"Row processed: {row['ticket']}")
             # update to minio bucket for processed records to a csv file
             processed_csv_file_name = f'{tmp_folder}processed-{csv_file_name}'
+            error_csv_file_name = f'{tmp_folder}errors-{csv_file_name}'
             write_csv_records(row,processed_csv_file_name,reader.fieldnames)
             # read file in csv_data
             with open(processed_csv_file_name, 'rb') as file_data:
@@ -119,6 +121,7 @@ def data_update_from_csv():
             logging.error(e)
             error_csv_file_name = f'{tmp_folder}errors-{csv_file_name}'
             write_csv_records(row, error_csv_file_name, reader.fieldnames)
+            errFlag = True
             # read file in csv_data
             with open(error_csv_file_name, 'rb') as file_data:
                 file_stat = os.stat(error_csv_file_name)
@@ -132,9 +135,10 @@ def data_update_from_csv():
     # remove file
     try:
         os.remove(processed_csv_file_name)
-        os.remove(error_csv_file_name)
+        if errFlag:
+            os.remove(error_csv_file_name)
     except Exception as e:
-        logging.error(f"Error while removing file: {processed_csv_file_name}")
+        logging.error(f"Error while removing file")
         logging.error(e)
     logging.info("Process completed to update data from csv file")
 
