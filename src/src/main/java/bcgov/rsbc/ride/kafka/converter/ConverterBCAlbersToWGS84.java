@@ -18,50 +18,74 @@ public class ConverterBCAlbersToWGS84{
         String easting = event.getXValue();
         String northing = event.getYValue();
 
-        // Create BC Albers and WGS84 coordinate systems
-        CRSFactory crsFactory = new CRSFactory();
-        CoordinateReferenceSystem albersBC = crsFactory.createFromName("EPSG:3005");
-        CoordinateReferenceSystem wgs84 = crsFactory.createFromParameters("WGS84", "+proj=latlong +datum=WGS84 +no_defs");
-        CoordinateTransformFactory transformFactory = new CoordinateTransformFactory();
-        CoordinateTransform transform = transformFactory.createTransform(albersBC, wgs84);
+        if (easting.equals("0") || northing.equals("0"))
 
-        // Perform the conversion
-        ProjCoordinate albersCoord = new ProjCoordinate(Double.parseDouble("1"+easting), Double.parseDouble(northing));
-        ProjCoordinate wgs84Coord = new ProjCoordinate();
-        transform.transform(albersCoord, wgs84Coord);
+        {
+            return ApproximateGeolocationAdapter.builder()
+                    .business_program("ETK")
+                    .business_type("violation")
+                    .business_id(event.getTicketNumber())
+                    // .long$(String.valueOf(longitude))
+                    // .lat(String.valueOf(latitude))
+                    .long$("")
+                    .lat("")
+                    .requested_address("")
+                    .submitted_address("")
+                    .full_address("")
+                    .databc_long("")
+                    .databc_lat("")
+                    .databc_score("")
+                    .build();
 
-        // double latitude = wgs84Coord.y;
-        // double longitude = wgs84Coord.x;
+        }else{
+            // Create BC Albers and WGS84 coordinate systems
+            CRSFactory crsFactory = new CRSFactory();
+            CoordinateReferenceSystem albersBC = crsFactory.createFromName("EPSG:3005");
+            CoordinateReferenceSystem wgs84 = crsFactory.createFromParameters("WGS84", "+proj=latlong +datum=WGS84 +no_defs");
+            CoordinateTransformFactory transformFactory = new CoordinateTransformFactory();
+            CoordinateTransform transform = transformFactory.createTransform(albersBC, wgs84);
 
-        String originalLatitude = String.valueOf(wgs84Coord.y);
-        String originalLongitude = String.valueOf(wgs84Coord.x);
+            // Perform the conversion
+            ProjCoordinate albersCoord = new ProjCoordinate(Double.parseDouble("1"+easting), Double.parseDouble(northing));
+            ProjCoordinate wgs84Coord = new ProjCoordinate();
+            transform.transform(albersCoord, wgs84Coord);
 
-        String latitude = originalLatitude.substring(0, Math.min(originalLatitude.length(), 15));
-        String longitude = originalLongitude.substring(0, Math.min(originalLongitude.length(), 15));
+            // double latitude = wgs84Coord.y;
+            // double longitude = wgs84Coord.x;
 
-        log.debug("Original latitude: {}; trimmed latitude up to 15 characters: {}", originalLatitude, latitude);
-        log.debug("Original longitude: {}; trimmed longitude up to 15 characters: {}", originalLongitude, longitude);
+            String originalLatitude = String.valueOf(wgs84Coord.y);
+            String originalLongitude = String.valueOf(wgs84Coord.x);
+
+            String latitude = originalLatitude.substring(0, Math.min(originalLatitude.length(), 15));
+            String longitude = originalLongitude.substring(0, Math.min(originalLongitude.length(), 15));
+
+            log.debug("Original latitude: {}; trimmed latitude up to 15 characters: {}", originalLatitude, latitude);
+            log.debug("Original longitude: {}; trimmed longitude up to 15 characters: {}", originalLongitude, longitude);
 
 
-        // Create Google Maps URL
-        log.info("Google Maps URL: http://maps.google.com/maps?f=q&hl=en&geocode=&q=" + latitude + "," + longitude +
-        "&ie=UTF8&ll=" + latitude + "," + longitude + "&spn=0.027108,0.109177");
+            // Create Google Maps URL
+            log.info("Google Maps URL: http://maps.google.com/maps?f=q&hl=en&geocode=&q=" + latitude + "," + longitude +
+                    "&ie=UTF8&ll=" + latitude + "," + longitude + "&spn=0.027108,0.109177");
 
-        return ApproximateGeolocationAdapter.builder()
-                .business_program("ETK")
-                .business_type("violation")
-                .business_id(event.getTicketNumber())
-                // .long$(String.valueOf(longitude))
-                // .lat(String.valueOf(latitude))
-                .long$(longitude)
-                .lat(latitude)
-                .requested_address("")
-                .submitted_address("")
-                .full_address("")
-                .databc_long("")
-                .databc_lat("")
-                .databc_score("")
-                .build();
+            return ApproximateGeolocationAdapter.builder()
+                    .business_program("ETK")
+                    .business_type("violation")
+                    .business_id(event.getTicketNumber())
+                    // .long$(String.valueOf(longitude))
+                    // .lat(String.valueOf(latitude))
+                    .long$(longitude)
+                    .lat(latitude)
+                    .requested_address("")
+                    .submitted_address("")
+                    .full_address("")
+                    .databc_long("")
+                    .databc_lat("")
+                    .databc_score("")
+                    .build();
+
+        }
+
+
 
     }
 }

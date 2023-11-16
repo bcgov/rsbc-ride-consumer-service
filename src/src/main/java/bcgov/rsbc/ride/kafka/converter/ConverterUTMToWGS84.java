@@ -20,39 +20,59 @@ public class ConverterUTMToWGS84 {
         String easting = event.getXValue();
         String northing = event.getYValue();
 
-        // Create a Coordinate Reference and a ProjCoordinate object to represent this coordinates
-        int zone = 10;
-        CRSFactory crsFactory = new CRSFactory();
-        ProjCoordinate latLongCoord = new ProjCoordinate();
-        CoordinateReferenceSystem utmCrs = crsFactory.createFromName("EPSG:326" + zone);
-        ProjCoordinate utmCoord = new ProjCoordinate(Double.parseDouble(easting), Double.parseDouble(northing));
-        utmCrs.getProjection().inverseProject(utmCoord, latLongCoord);
+        if (easting.equals("0") || northing.equals("0"))
 
-        String originalLatitude = String.valueOf(latLongCoord.y);
-        String originalLongitude = String.valueOf(latLongCoord.x);
+        {
+            return ApproximateGeolocationAdapter.builder()
+                    .business_program("ETK")
+                    .business_type("violation")
+                    .business_id(event.getTicketNumber())
+                    .long$("")
+                    .lat("")
+                    .requested_address("")
+                    .submitted_address("")
+                    .full_address("")
+                    .databc_long("")
+                    .databc_lat("")
+                    .databc_score("")
+                    .build();
+        }else{
+            // Create a Coordinate Reference and a ProjCoordinate object to represent this coordinates
+            int zone = 10;
+            CRSFactory crsFactory = new CRSFactory();
+            ProjCoordinate latLongCoord = new ProjCoordinate();
+            CoordinateReferenceSystem utmCrs = crsFactory.createFromName("EPSG:326" + zone);
+            ProjCoordinate utmCoord = new ProjCoordinate(Double.parseDouble(easting), Double.parseDouble(northing));
+            utmCrs.getProjection().inverseProject(utmCoord, latLongCoord);
 
-        String latitude = originalLatitude.substring(0, Math.min(originalLatitude.length(), 15));
-        String longitude = originalLongitude.substring(0, Math.min(originalLongitude.length(), 15));
+            String originalLatitude = String.valueOf(latLongCoord.y);
+            String originalLongitude = String.valueOf(latLongCoord.x);
 
-        log.debug("Original latitude: {}; trimmed latitude up to 15 characters: {}", originalLatitude, latitude);
-        log.debug("Original longitude: {}; trimmed longitude up to 15 characters: {}", originalLongitude, longitude);
+            String latitude = originalLatitude.substring(0, Math.min(originalLatitude.length(), 15));
+            String longitude = originalLongitude.substring(0, Math.min(originalLongitude.length(), 15));
 
-        // Create a Google Maps URL with the converted latitude, longitude, and UTM zone
-        log.info("Google Maps URL: http://maps.google.com/maps?f=q&hl=en&geocode=&q=" + latitude + "," + longitude +
-        "&ie=UTF8&ll=" + latitude + "," + longitude + "&spn=0.027108,0.109177&z=" + zone);
+            log.debug("Original latitude: {}; trimmed latitude up to 15 characters: {}", originalLatitude, latitude);
+            log.debug("Original longitude: {}; trimmed longitude up to 15 characters: {}", originalLongitude, longitude);
 
-        return ApproximateGeolocationAdapter.builder()
-                .business_program("ETK")
-                .business_type("violation")
-                .business_id(event.getTicketNumber())
-                .long$(longitude)
-                .lat(latitude)
-                .requested_address("")
-                .submitted_address("")
-                .full_address("")
-                .databc_long("")
-                .databc_lat("")
-                .databc_score("")
-                .build();
+            // Create a Google Maps URL with the converted latitude, longitude, and UTM zone
+            log.info("Google Maps URL: http://maps.google.com/maps?f=q&hl=en&geocode=&q=" + latitude + "," + longitude +
+                    "&ie=UTF8&ll=" + latitude + "," + longitude + "&spn=0.027108,0.109177&z=" + zone);
+
+            return ApproximateGeolocationAdapter.builder()
+                    .business_program("ETK")
+                    .business_type("violation")
+                    .business_id(event.getTicketNumber())
+                    .long$(longitude)
+                    .lat(latitude)
+                    .requested_address("")
+                    .submitted_address("")
+                    .full_address("")
+                    .databc_long("")
+                    .databc_lat("")
+                    .databc_score("")
+                    .build();
+        }
+
+
     }
 }
