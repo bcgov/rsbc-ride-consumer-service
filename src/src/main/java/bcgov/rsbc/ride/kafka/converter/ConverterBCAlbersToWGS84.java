@@ -17,8 +17,25 @@ public class ConverterBCAlbersToWGS84{
         log.info("Converting BC Albers coordinates to WGS84 coordinates");
         String easting = event.getXValue();
         String northing = event.getYValue();
-
-        // Create BC Albers and WGS84 coordinate systems
+        if (easting.equals("0") || northing.equals("0"))
+        {
+            return ApproximateGeolocationAdapter.builder()
+                .business_program("ETK")
+                .business_type("violation")
+                .business_id(event.getTicketNumber())
+                // .long$(String.valueOf(longitude))
+                // .lat(String.valueOf(latitude))
+                .long$(0)
+                .lat(0)
+                .requested_address("")
+                .submitted_address("")
+                .full_address("")
+                .databc_long("")
+                .databc_lat("")
+                .databc_score("")
+                .build();
+        }else{
+            // Create BC Albers and WGS84 coordinate systems
         CRSFactory crsFactory = new CRSFactory();
         CoordinateReferenceSystem albersBC = crsFactory.createFromName("EPSG:3005");
         CoordinateReferenceSystem wgs84 = crsFactory.createFromParameters("WGS84", "+proj=latlong +datum=WGS84 +no_defs");
@@ -62,6 +79,9 @@ public class ConverterBCAlbersToWGS84{
                 .databc_lat("")
                 .databc_score("")
                 .build();
+        }
+
+        
 
     }
 }
