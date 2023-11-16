@@ -20,7 +20,23 @@ public class ConverterUTMToWGS84 {
         String easting = event.getXValue();
         String northing = event.getYValue();
 
-        // Create a Coordinate Reference and a ProjCoordinate object to represent this coordinates
+        if (easting.equals("0") || northing.equals("0"))
+        {
+           return ApproximateGeolocationAdapter.builder()
+                .business_program("ETK")
+                .business_type("violation")
+                .business_id(event.getTicketNumber())
+                .long$(0)
+                .lat(0)
+                .requested_address("")
+                .submitted_address("")
+                .full_address("")
+                .databc_long("")
+                .databc_lat("")
+                .databc_score("")
+                .build(); 
+        }else{
+            // Create a Coordinate Reference and a ProjCoordinate object to represent this coordinates
         int zone = 10;
         CRSFactory crsFactory = new CRSFactory();
         ProjCoordinate latLongCoord = new ProjCoordinate();
@@ -54,5 +70,8 @@ public class ConverterUTMToWGS84 {
                 .databc_lat("")
                 .databc_score("")
                 .build();
+        }
+
+        
     }
 }
