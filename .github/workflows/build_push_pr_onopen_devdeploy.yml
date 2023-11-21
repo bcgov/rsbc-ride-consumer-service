@@ -5,8 +5,145 @@ on:
     branches:   
       - 'devbranch'
 
+permissions: write-all
+
 
 jobs:
+  trivy-scan:
+    runs-on: ubuntu-latest
+    environment: pr
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+      pull-requests: read
+      checks: write
+      issues: write
+      statuses: write
+      deployments: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Authenticate and set context for dev get cluster ca
+        uses: redhat-actions/oc-login@v1.2
+        with:
+          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_URL_SILVER }}
+          openshift_token: ${{ secrets.OPENSHIFT_SA_PIPELINE_TOKEN_SILVER_DEV }}
+          namespace: "${{ secrets.OPENSHIFT_LICENSE_PLATE_SILVER }}-dev"
+      - name: Get Cluster ca secret for build
+        run: |
+          oc get secret ${{ secrets.CLUSTER_CA_SECRET_NAME }} -o jsonpath='{.data.ca\.p12}' | base64 -d -i > src/certs/ca.p12
+
+      - name: Setup
+        uses: docker/setup-buildx-action@v2
+        with:
+          install: true
+
+      - name: Login
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.DOCKER_REGISTRY }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build
+        uses: docker/build-push-action@v3
+        env:
+          DOCKER_CONTEXT_FOLDER: src
+          DOCKER_IMAGE_NAME: ride-consumer-service
+          DOCKER_FILE: src/Dockerfile.multistage
+        with:
+          context: ${{ env.DOCKER_CONTEXT_FOLDER }}
+          file: ${{ env.DOCKER_FILE }}
+          push: false
+          load: true
+          tags:  ${{ env.DOCKER_IMAGE_NAME }}:latest
+          build-args: |
+              APP_ACCEPTED_EVENT_TOPIC=""
+              PAYRECVD_EVENT_TOPIC=""
+              REVSCHED_EVENT_TOPIC=""
+              TEST_EVENT_TOPIC=""
+              DISCLOSURE_EVENT_TOPIC=""
+              EVSUBMITTED_EVENT_TOPIC=""
+              KAFKA_SASL_CONFIG=""
+              KAFKA_SASL_MECH=""
+              KAFKA_SCHEMA_REGISTRY=""
+              KAFKA_SEC_PROTOCOL=${{ secrets.KAFKA_SEC_PROTOCOL }}
+              KAFKA_SERVER=""
+              SSL_PROTOCOL=${{ secrets.SSL_PROTOCOL }}
+              SSL_TRUSTSTORE=""
+              SSL_TRUSTTORE_PASS=""
+              SSL_TRUSTTORE_TYPE=""
+              KAFKA_CONFLUENT_COMPAT_REGISTRY=""
+              CLUSTER_CA_SECRET_NAME=""
+              APP_ACCEPTED_EVENT_DECODED_TOPIC: ""
+              DISCLOSURE_EVENT_DECODED_TOPIC: ""
+              EVSUBMITTED_EVENT_DECODED_TOPIC: ""
+              PAYRECVD_EVENT_DECODED_TOPIC: ""
+              REVSCHED_EVENT_DECODED_TOPIC: ""
+              TEST_EVENT_SINK_TOPIC: ""
+              RECON_PORT: ""
+              RECON_HOST: ""
+      - name: Run Trivy vulnerability scanner- stdout
+        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        if: always()
+        env:
+          DOCKER_IMAGE_NAME: ride-consumer-service
+        with:
+          scan-type: image
+          image-ref: ${{ env.DOCKER_IMAGE_NAME }}:latest
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          severity: CRITICAL
+      - name: Run Trivy vulnerability scanner- save to file
+        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        if: always()
+        env:
+          DOCKER_IMAGE_NAME: ride-consumer-service
+        with:
+          scan-type: image
+          image-ref: ${{ env.DOCKER_IMAGE_NAME }}:latest
+          format: 'template'
+          ignore-unfixed: true
+          template: "@/contrib/html.tpl"
+          output: trivy.html
+          severity: CRITICAL
+      - name: Run Trivy vulnerability scanner- save to sarif file
+        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        if: always()
+        env:
+          DOCKER_IMAGE_NAME: ride-consumer-service
+        with:
+          scan-type: image
+          image-ref: ${{ env.DOCKER_IMAGE_NAME }}:latest
+          format: 'template'
+          ignore-unfixed: true
+          template: "@/contrib/sarif.tpl"
+          output: trivy.sarif
+          severity: CRITICAL
+      - name: Edit html file to clean headers
+        if: always()
+        run: |          
+          sed '/<head/,/<\/head>/d' trivy.html >trivy_updated.html
+          cat trivy_updated.html
+      - name: Send results to Status
+        if: always()
+        run: |
+          cat trivy_updated.html >> $GITHUB_STEP_SUMMARY   
+      - name: Post SARIF findings in the issue
+        uses: sett-and-hive/sarif-to-issue-action@v1
+        if: failure()
+        env:
+          DOCKER_IMAGE_NAME: ride-consumer-service
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          branch: ${{ github.head_ref }}
+          sarif-file: trivy.sarif
+          title: "Critical vulnerabilities found in ${{ env.DOCKER_IMAGE_NAME }} on PR ${{ github.event.number }}"
+          odc-sarif: false
   run_unit_test:
     name: Run Unit Tests
     runs-on: ubuntu-latest
@@ -35,6 +172,15 @@ jobs:
       PAYRECVD_EVENT_DECODED_TOPIC: ${{ secrets.PAYRECVD_EVENT_DECODED_TOPIC }}
       REVSCHED_EVENT_DECODED_TOPIC: ${{ secrets.REVSCHED_EVENT_DECODED_TOPIC }}
       TEST_EVENT_SINK_TOPIC: ${{ secrets.TEST_EVENT_SINK_TOPIC }}
+      ISSUANCE_EVENT_TOPIC: ${{ secrets.ISSUANCE_EVENT_TOPIC }}
+      PAYMENT_EVENT_TOPIC: ${{ secrets.PAYMENT_EVENT_TOPIC }}
+      DISPUTE_EVENT_TOPIC: ${{ secrets.DISPUTE_EVENT_TOPIC }}
+      DISPUTE_UPDATE_EVENT_TOPIC: ${{ secrets.DISPUTE_UPDATE_EVENT_TOPIC }}
+      VIOLATIONS_EVENT_TOPIC: ${{ secrets.VIOLATIONS_EVENT_TOPIC }}
+      PAYQUERY_EVENT_TOPIC: ${{ secrets.PAYQUERY_EVENT_TOPIC }}
+      RECON_SVC_HOST: ${{ secrets.RECON_SVC_HOST }}
+      RECON_PORT: "5000"
+      RECON_HOST: "localhost"
 
 
     steps:
@@ -65,6 +211,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest    
+    needs: [trivy-scan,run_unit_test]
     if: (startsWith(github.event.pull_request.head.ref, 'release/')) || (startsWith(github.event.pull_request.head.ref, 'release'))
     environment: dev
     env:
@@ -129,6 +276,15 @@ jobs:
               PAYRECVD_EVENT_DECODED_TOPIC: ""
               REVSCHED_EVENT_DECODED_TOPIC: ""
               TEST_EVENT_SINK_TOPIC: ""
+              ISSUANCE_EVENT_TOPIC: ""
+              PAYMENT_EVENT_TOPIC: ""
+              DISPUTE_EVENT_TOPIC: ""
+              DISPUTE_UPDATE_EVENT_TOPIC: ""
+              VIOLATIONS_EVENT_TOPIC: ""
+              PAYQUERY_EVENT_TOPIC: ""
+              RECON_SVC_HOST: ""
+              RECON_PORT: ""
+              RECON_HOST: ""
 
   deploy_dev_argocd:
     name: Push to Gitops repo for Dev deployment via Argocd

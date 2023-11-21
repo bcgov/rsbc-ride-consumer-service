@@ -1,0 +1,1 @@
+{"schema":"etk","eventid":"12345","data":[{"event_id": "12345", "ticket_number": "4451", "count_number": 1, "dispute_action_date": "45", "dispute_action_code": "ab", "event": {"id": null, "version": null, "date_time": null, "type": null}}],"destination":"bi","source":"etk_consumer","tablename":"dispute_status_updates"}

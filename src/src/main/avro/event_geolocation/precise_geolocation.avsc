@@ -1,0 +1,64 @@
+{
+  "name": "PreciseGeolocationData",
+  "type": "record",
+  "namespace": "bcgov.rsbc.ride.kafka.models",
+  "fields": [
+    {
+      "name": "event_type",
+      "type": "string"
+    },
+    {
+      "name": "PreciseGeolocation",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "PreciseGeolocationRecord",
+          "fields": [
+            {
+              "name": "ticket_number",
+              "type": "string"
+            },
+            {
+              "name": "server_code",
+              "type": "string"
+            },
+            {
+              "name": "x_value",
+              "type": "string"
+            },
+            {
+              "name": "y_value",
+              "type": "string"
+            },
+            {
+              "name": "event",
+              "type": {
+                "type": "record",
+                "name": "EventRecord",
+                "fields": [
+                  {
+                    "name": "id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "version",
+                    "type": "string"
+                  },
+                  {
+                    "name": "date_time",
+                    "type": "string"
+                  },
+                  {
+                    "name": "type",
+                    "type": "string"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
