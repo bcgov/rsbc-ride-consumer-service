@@ -1,0 +1,1 @@
+{"schema":"etk","eventid":"12345","data":[{"event_id": "12345", "ticket_number": "222", "event": {"id": null, "version": null, "date_time": null, "type": null}}],"destination":"bi","source":"etk_consumer","tablename":"queries"}

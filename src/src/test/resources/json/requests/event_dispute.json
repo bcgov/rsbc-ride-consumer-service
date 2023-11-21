@@ -1,0 +1,13 @@
+{
+  "ticket_number":"222",
+  "count_number": 2,
+  "dispute_action_date":"2022-01-01",
+  "dispute_type_code":"222",
+  "count_act_regulation":"222",
+  "compressed_section":"222",
+  "event": {
+    "event_id": 12345,
+    "event_version": 222,
+    "event_date_time": "2022-01-01"
+  }
+}

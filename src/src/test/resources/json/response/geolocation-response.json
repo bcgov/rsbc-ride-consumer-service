@@ -1,0 +1,49 @@
+{
+  "success": true,
+  "addressRaw": "1000 W 71st Ave, Vancouver, BC",
+  "dataBc": {
+    "score": 95,
+    "precision": "CIVIC_NUMBER",
+    "fullAddress": "UNIT 1000W -- 71 W 2nd Ave, Vancouver, BC",
+    "lat": 49.269575,
+    "lon": -123.1057995,
+    "faults": [
+      {
+        "value": "2 C",
+        "element": "PROVINCE_GARBAGE",
+        "fault": "notAllowed",
+        "penalty": 2
+      },
+      {
+        "value": "",
+        "element": "UNIT_DESIGNATOR",
+        "fault": "missing",
+        "penalty": 0
+      },
+      {
+        "value": "1000W",
+        "element": "UNIT_NUMBER",
+        "fault": "notMatched",
+        "penalty": 1
+      },
+      {
+        "value": "C",
+        "element": "STREET_DIRECTION",
+        "fault": "notMatched",
+        "penalty": 2
+      },
+      {
+        "value": "C",
+        "element": "STREET_DIRECTION",
+        "fault": "notSuffix",
+        "penalty": 0
+      },
+      {
+        "value": "AVE",
+        "element": "STREET_TYPE",
+        "fault": "notPrefix",
+        "penalty": 0
+      }
+    ]
+  }
+}

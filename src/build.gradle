@@ -6,10 +6,20 @@ plugins {
 }
 
 repositories {
-    mavenCentral()
     mavenLocal()
+    mavenCentral {
+        content {
+            excludeModule("javax.media", "jai_core")
+        }
+    }
     maven {
-        url "https://packages.confluent.io/maven/"
+        url 'https://packages.confluent.io/maven/'
+    }
+    maven {
+        url 'https://repo.osgeo.org/repository/release/'
+    }
+    maven {
+        url 'https://repo.osgeo.org/repository/snapshot/'
     }
 }
 
@@ -29,11 +39,8 @@ sonar {
 
 dependencies {
     implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
-//    implementation 'io.quarkus:quarkus-arc'
-//    implementation 'io.quarkus:quarkus-resteasy-reactive'
     implementation 'io.quarkus:quarkus-resteasy'
     implementation 'io.quarkus:quarkus-resteasy-mutiny'
-//    implementation 'io.quarkus:quarkus-resteasy-reactive'
     implementation 'io.quarkus:quarkus-arc'
     implementation 'io.quarkus:quarkus-resteasy-jackson'
     implementation 'io.quarkus:quarkus-kafka-client'
@@ -47,13 +54,45 @@ dependencies {
     implementation 'io.confluent:kafka-avro-serializer:7.0.1'   
     implementation 'io.quarkus:quarkus-confluent-registry-avro:2.10.2.Final'
     implementation 'io.quarkus:quarkus-rest-client-reactive:2.10.2.Final'
+    implementation 'io.confluent:kafka-json-serializer:7.3.2'
+    implementation 'io.confluent:kafka-json-schema-serializer:7.4.0'
+    implementation 'org.everit.json:org.everit.json.schema:1.5.1'
+    implementation 'org.mockito:mockito-testng:0.5.0'
 
 
-
-
-
+    // Test Dependencies
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
+    testImplementation 'org.mockito:mockito-core:3.12.4'
+    testImplementation 'com.github.tomakehurst:wiremock:3.0.1'
+    testImplementation 'io.quarkus:quarkus-resteasy-jackson'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
+
+    // Lombok Dependencies
+    implementation 'org.projectlombok:lombok:1.18.28'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7.1'
+
+    // Avro Dependencies
+    implementation 'io.quarkus:quarkus-avro'
+    implementation 'org.apache.avro:avro:1.10.2'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-avro:2.12.4'
+
+    // Json Dependencies
+    implementation 'io.quarkus:quarkus-resteasy-jsonb'
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+
+    // OpenTelemetry Dependencies
+    implementation 'io.quarkus:quarkus-opentelemetry'
+    implementation 'io.opentelemetry:opentelemetry-api:1.18.0'
+    implementation 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.18.0-alpha'
+    implementation 'io.quarkus:quarkus-micrometer-registry-prometheus'
+    implementation 'io.quarkus:quarkus-opentelemetry-exporter-otlp'
+
+    // Geotools
+    implementation 'org.osgeo:proj4j:0.1.0'
+    implementation 'org.geotools:gt-main:27.0'
 }
 
 group 'bcgov.rsbc.ride.kafka'
@@ -74,4 +113,10 @@ compileJava {
 
 compileTestJava {
     options.encoding = 'UTF-8'
+}
+
+configurations.configureEach {
+    resolutionStrategy {
+        force 'org.yaml:snakeyaml:2.2'
+    }
 }

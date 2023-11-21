@@ -6,6 +6,7 @@ on:
       - 'release**'
       - 'main'
       - 'master'
+permissions: write-all
 
 jobs:
   trivy-scan:
@@ -82,6 +83,8 @@ jobs:
               PAYRECVD_EVENT_DECODED_TOPIC: ""
               REVSCHED_EVENT_DECODED_TOPIC: ""
               TEST_EVENT_SINK_TOPIC: ""
+              RECON_PORT: ""
+              RECON_HOST: ""
       - name: Run Trivy vulnerability scanner- stdout
         uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
         if: always()
@@ -169,6 +172,15 @@ jobs:
       PAYRECVD_EVENT_DECODED_TOPIC: ${{ secrets.PAYRECVD_EVENT_DECODED_TOPIC }}
       REVSCHED_EVENT_DECODED_TOPIC: ${{ secrets.REVSCHED_EVENT_DECODED_TOPIC }}
       TEST_EVENT_SINK_TOPIC: ${{ secrets.TEST_EVENT_SINK_TOPIC }}
+      ISSUANCE_EVENT_TOPIC: ${{ secrets.ISSUANCE_EVENT_TOPIC }}
+      PAYMENT_EVENT_TOPIC: ${{ secrets.PAYMENT_EVENT_TOPIC }}
+      DISPUTE_EVENT_TOPIC: ${{ secrets.DISPUTE_EVENT_TOPIC }}
+      DISPUTE_UPDATE_EVENT_TOPIC: ${{ secrets.DISPUTE_UPDATE_EVENT_TOPIC }}
+      VIOLATIONS_EVENT_TOPIC: ${{ secrets.VIOLATIONS_EVENT_TOPIC }}
+      PAYQUERY_EVENT_TOPIC: ${{ secrets.PAYQUERY_EVENT_TOPIC }}
+      RECON_SVC_HOST: ${{ secrets.RECON_SVC_HOST }}
+      RECON_PORT: "5000"
+      RECON_HOST: "localhost"
 
 
     steps:
@@ -224,7 +236,15 @@ jobs:
       PAYRECVD_EVENT_DECODED_TOPIC: ${{ secrets.PAYRECVD_EVENT_DECODED_TOPIC }}
       REVSCHED_EVENT_DECODED_TOPIC: ${{ secrets.REVSCHED_EVENT_DECODED_TOPIC }}
       TEST_EVENT_SINK_TOPIC: ${{ secrets.TEST_EVENT_SINK_TOPIC }}
-
+      ISSUANCE_EVENT_TOPIC: ${{ secrets.ISSUANCE_EVENT_TOPIC }}
+      PAYMENT_EVENT_TOPIC: ${{ secrets.PAYMENT_EVENT_TOPIC }}
+      DISPUTE_EVENT_TOPIC: ${{ secrets.DISPUTE_EVENT_TOPIC }}
+      DISPUTE_UPDATE_EVENT_TOPIC: ${{ secrets.DISPUTE_UPDATE_EVENT_TOPIC }}
+      VIOLATIONS_EVENT_TOPIC: ${{ secrets.VIOLATIONS_EVENT_TOPIC }}
+      PAYQUERY_EVENT_TOPIC: ${{ secrets.PAYQUERY_EVENT_TOPIC }}
+      RECON_SVC_HOST: ${{ secrets.RECON_SVC_HOST }}
+      RECON_PORT: ""
+      RECON_HOST: ""
 
     steps:
       - name: Checkout repository
