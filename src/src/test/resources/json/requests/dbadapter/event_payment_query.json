@@ -1,0 +1,8 @@
+{
+  "ticket_number":"222",
+  "event": {
+    "event_id": 12345,
+    "event_version": 222,
+    "event_date_time": "2022-01-01"
+  }
+}

@@ -1,0 +1,89 @@
+name: SonarCloud
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - release**
+      - patch/**
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+        - main
+        - devbranch
+        - testbranch
+        - release**
+jobs:
+  build:
+    name: Build and analyze
+    runs-on: ubuntu-latest
+    environment: pr
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
+      - name: Authenticate and set context for dev get cluster ca
+        uses: redhat-actions/oc-login@v1.2
+        with:
+          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_URL_SILVER }}
+          openshift_token: ${{ secrets.OPENSHIFT_SA_PIPELINE_TOKEN_SILVER_DEV }}
+          namespace: "${{ secrets.OPENSHIFT_LICENSE_PLATE_SILVER }}-dev"
+      - name: Get Cluster ca secret for build
+        run: |
+          oc get secret ${{ secrets.CLUSTER_CA_SECRET_NAME }} -o jsonpath='{.data.ca\.p12}' | base64 -d -i > ca.p12
+          pwd
+          ls -a
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          APP_ACCEPTED_EVENT_TOPIC: ${{ secrets.APP_ACCEPTED_EVENT_TOPIC }}
+          PAYRECVD_EVENT_TOPIC: ${{ secrets.PAYRECVD_EVENT_TOPIC }}
+          REVSCHED_EVENT_TOPIC: ${{ secrets.REVSCHED_EVENT_TOPIC }}
+          TEST_EVENT_TOPIC: ${{ secrets.TEST_EVENT_TOPIC }}
+          DISCLOSURE_EVENT_TOPIC: ${{ secrets.DISCLOSURE_EVENT_TOPIC }}
+          EVSUBMITTED_EVENT_TOPIC: ${{ secrets.EVSUBMITTED_EVENT_TOPIC }}
+          KAFKA_SASL_CONFIG: ${{ secrets.KAFKA_SASL_CONFIG }}
+          KAFKA_SASL_MECH: ${{ secrets.KAFKA_SASL_MECH }}
+          KAFKA_SCHEMA_REGISTRY: ${{ secrets.KAFKA_SCHEMA_REGISTRY }}
+          KAFKA_SEC_PROTOCOL: ${{ secrets.KAFKA_SEC_PROTOCOL }}
+          KAFKA_SERVER: ${{ secrets.KAFKA_SERVER }}
+          SSL_PROTOCOL: ${{ secrets.SSL_PROTOCOL }}
+          SSL_TRUSTSTORE: ${{ secrets.SSL_TRUSTSTORE }}
+          SSL_TRUSTTORE_PASS: ${{ secrets.SSL_TRUSTTORE_PASS }}
+          SSL_TRUSTTORE_TYPE: ${{ secrets.SSL_TRUSTTORE_TYPE }}
+          KAFKA_CONFLUENT_COMPAT_REGISTRY: ${{ secrets.KAFKA_CONFLUENT_COMPAT_REGISTRY }}
+          APP_ACCEPTED_EVENT_DECODED_TOPIC: ${{ secrets.APP_ACCEPTED_EVENT_DECODED_TOPIC }}
+          DISCLOSURE_EVENT_DECODED_TOPIC: ${{ secrets.DISCLOSURE_EVENT_DECODED_TOPIC }}
+          EVSUBMITTED_EVENT_DECODED_TOPIC: ${{ secrets.EVSUBMITTED_EVENT_DECODED_TOPIC }}
+          PAYRECVD_EVENT_DECODED_TOPIC: ${{ secrets.PAYRECVD_EVENT_DECODED_TOPIC }}
+          REVSCHED_EVENT_DECODED_TOPIC: ${{ secrets.REVSCHED_EVENT_DECODED_TOPIC }}
+          TEST_EVENT_SINK_TOPIC: ${{ secrets.TEST_EVENT_SINK_TOPIC }}
+          ISSUANCE_EVENT_TOPIC: ${{ secrets.ISSUANCE_EVENT_TOPIC }}
+          PAYMENT_EVENT_TOPIC: ${{ secrets.PAYMENT_EVENT_TOPIC }}
+          DISPUTE_EVENT_TOPIC: ${{ secrets.DISPUTE_EVENT_TOPIC }}
+          DISPUTE_UPDATE_EVENT_TOPIC: ${{ secrets.DISPUTE_UPDATE_EVENT_TOPIC }}
+          VIOLATIONS_EVENT_TOPIC: ${{ secrets.VIOLATIONS_EVENT_TOPIC }}
+          PAYQUERY_EVENT_TOPIC: ${{ secrets.PAYQUERY_EVENT_TOPIC }}
+          RECON_SVC_HOST: ${{ secrets.RECON_SVC_HOST }}
+        run: |
+          cd src
+          chmod +x ./gradlew
+          ./gradlew build  sonar --info --stacktrace
