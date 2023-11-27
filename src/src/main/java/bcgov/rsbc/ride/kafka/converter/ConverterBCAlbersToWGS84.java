@@ -15,8 +15,8 @@ import javax.enterprise.context.ApplicationScoped;
 public class ConverterBCAlbersToWGS84{
     public ApproximateGeolocationAdapter convert(PreciseGeolocationRecord event) {
         log.info("Converting BC Albers coordinates to WGS84 coordinates");
-        String easting = event.getXValue();
-        String northing = event.getYValue();
+        String easting = event.getXValue().trim();
+        String northing = event.getYValue().trim();
 
         if (easting.equals("0") || northing.equals("0"))
 
