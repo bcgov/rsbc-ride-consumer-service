@@ -64,7 +64,7 @@ public class ApproximateGeolocationEvent extends EtkEventHandler<IssuanceRecord,
         logger.info("GeolocationRequest Event received: " + eventPayload);
         BackoffConfig backoffConfig = BackoffConfig.builder()
                 .maxRetries(0)
-                .timeoutSeconds(15)
+                .timeoutSeconds(90)
                 .retryIntervalMilliseconds(5000) // 1.25 seconds retry interval
                 .maxDelayMilliseconds(15000) // 15 seconds max delay
                 .build();
