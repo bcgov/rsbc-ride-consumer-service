@@ -53,9 +53,12 @@ public class RideAdapterService {
 
         logger.info("Calling Ride DB Adapter API with payload: " + payload + ", eventId: " + eventId);
 
+        int dbAdapterTimeoutms=90000;
+
         return webClient
                 .post(PORT, HOST,"/upsertdata")
-                .timeout(timeoutMilliseconds)
+                // .timeout(timeoutMilliseconds)
+                .timeout(dbAdapterTimeoutms)
                 .putHeader("Content-Type", "application/json")
                 .sendJson(payload)
                 .toCompletionStage()
