@@ -186,11 +186,6 @@
                       "type": "string"
                     },
                     {
-                      "name": "act_trans",
-                      "type": "string",
-                      "default": ""
-                    },
-                    {
                       "name": "section_text",
                       "type": "string"
                     },
