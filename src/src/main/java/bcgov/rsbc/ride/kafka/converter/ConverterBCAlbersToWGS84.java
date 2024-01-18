@@ -46,7 +46,7 @@ public class ConverterBCAlbersToWGS84{
             CoordinateTransform transform = transformFactory.createTransform(albersBC, wgs84);
 
             // Perform the conversion
-            ProjCoordinate albersCoord = new ProjCoordinate(Double.parseDouble("1"+easting), Double.parseDouble(northing));
+            ProjCoordinate albersCoord = new ProjCoordinate(Double.parseDouble(easting), Double.parseDouble(northing));
             ProjCoordinate wgs84Coord = new ProjCoordinate();
             transform.transform(albersCoord, wgs84Coord);
 
