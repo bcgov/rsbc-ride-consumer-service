@@ -29,7 +29,8 @@
             },
             {
               "name": "act_trans",
-              "type": "string"
+              "type": "string",
+              "default": ""
             },
             {
               "name": "section_text",
