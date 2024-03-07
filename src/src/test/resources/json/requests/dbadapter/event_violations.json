@@ -8,8 +8,9 @@
   "fine_amount":"1234",
   "wording_number": 1,
   "event": {
-    "event_id": 12345,
-    "event_version": 222,
-    "event_date_time": "2022-01-01"
+    "id": 12345,
+    "version": 222,
+    "date_time": "2022-01-01",
+    "type": "1234"
   }
 }
