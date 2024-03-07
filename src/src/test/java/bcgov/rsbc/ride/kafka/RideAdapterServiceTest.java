@@ -54,7 +54,7 @@ public class RideAdapterServiceTest {
     @Test
     public void testPaymentEvent() throws IOException {
         String eventId = "12345";
-        IssuanceRecord event = customObjectMapper.getObjectMapper().readValue(getFileContent("json/requests/dbadapter/event_payment.json"), IssuanceRecord.class);
+        PaymentRecord event = customObjectMapper.getObjectMapper().readValue(getFileContent("json/requests/dbadapter/event_payment.json"), PaymentRecord.class);
         event.setEventId(eventId);
         JSONObject payload = rideAdapterService.getPayload(List.of(event), eventId, "etk", "payments", null);
         System.out.println(payload.toJSONString());
