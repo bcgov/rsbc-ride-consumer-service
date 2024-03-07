@@ -1,6 +1,1 @@
-{"schema":"etk","eventid":"12345","data":[{"ticket_number":"56789","count_number": 1,"act_code":"1234","act_trans":"1234","section_text":"1234","section_desc":"1234","fine_amount":"1234","wording_number": 1,"event": {
-    "id": 12345,
-    "version": 222,
-    "date_time": "2022-01-01",
-    "type": "1234"
-  }}],"destination":"bi","source":"etk_consumer","tablename":"violations"}
+{"schema":"etk","eventid":"12345","data":[{"ticket_number":"56789","count_number": 1,"act_code":"1234","act_trans":"1234","section_text":"1234","section_desc":"1234","fine_amount":"1234","wording_number": 1,"event": {"id": 12345,"version": 222,"date_time": "2022-01-01","type": "1234"}}],"destination":"bi","source":"etk_consumer","tablename":"violations"}
