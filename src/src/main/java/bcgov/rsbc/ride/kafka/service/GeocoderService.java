@@ -56,6 +56,8 @@ public class GeocoderService {
         String address = cleanUpAddress(addressRaw);
         CompletableFuture<HttpResponse<Buffer>> responseFuture = new CompletableFuture<>();
 
+        responseFuture.complete(null);
+
         return responseFuture.thenApply(resp -> {
 //            if (resp.statusCode() != 200) {
 //                logger.error("Error calling Geocoder API: " + resp.statusCode() + " " + resp.statusMessage());
@@ -85,6 +87,12 @@ public class GeocoderService {
 
 //                logger.info("Successful callGeocoderApi returning: " + geolocation + ", eventId: " + eventId);
                 logger.info("Successful set blank values for  " + geolocation + ", eventId: " + eventId);
+
+//                convert geolocation to responseFuture
+//                responseFuture.complete(resp);
+
+
+//                geolocation=new responseFuture(geolocation);
 
                 return geolocation;
             }
