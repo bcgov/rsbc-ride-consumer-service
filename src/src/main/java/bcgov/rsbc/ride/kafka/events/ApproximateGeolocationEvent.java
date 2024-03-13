@@ -70,10 +70,14 @@ public class ApproximateGeolocationEvent extends EtkEventHandler<IssuanceRecord,
                 .build();
 
         reconService.updateMainStagingStatus(rideEvtID,"consumer_geolocation_process");
-        geocoderService.callGeocoderApi(event, rideEvtID, backoffConfig)
+        geocoderService.setBlankGeoValues(event, rideEvtID, backoffConfig)
                 .thenApply(geoloc -> { if (geoloc != null) logger.info("Geolocation received Successfully: " + geoloc); return geoloc; })
                 .thenAccept(geoloc -> rideAdapterService.sendData(List.of(geoloc), rideEvtID, "gis", "geolocations", primaryKey.orElse(null), 5000))
                 .thenRun(() -> rideAdapterService.sendData(List.of(eventRecord), rideEvtID, "etk", "events", evtprimaryKey.orElse(null), 5000));
+//        geocoderService.callGeocoderApi(event, rideEvtID, backoffConfig)
+//                .thenApply(geoloc -> { if (geoloc != null) logger.info("Geolocation received Successfully: " + geoloc); return geoloc; })
+//                .thenAccept(geoloc -> rideAdapterService.sendData(List.of(geoloc), rideEvtID, "gis", "geolocations", primaryKey.orElse(null), 5000))
+//                .thenRun(() -> rideAdapterService.sendData(List.of(eventRecord), rideEvtID, "etk", "events", evtprimaryKey.orElse(null), 5000));
 
     }
 }

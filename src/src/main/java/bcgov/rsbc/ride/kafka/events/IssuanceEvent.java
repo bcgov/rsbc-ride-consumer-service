@@ -60,6 +60,7 @@ public class IssuanceEvent extends EtkEventHandler<String,IssuanceRecord> {
         reconService.updateMainStagingStatus(rideEvtID,"consumer_process");
         rideAdapterService.sendData(List.of(eventPayload), rideEvtID, "etk", "issuances", primaryKey.orElse(null), 5000)
                 .thenRun(() -> rideAdapterService.sendData(counts, rideEvtID, "etk", "violations", violationsPrimaryKey.orElse(null), 5000))
-                .thenRun(() -> rideAdapterService.sendData(List.of(eventRecord), rideEvtID, "etk", "events", evtprimaryKey.orElse(null), 5000));
+                .thenRun(() -> rideAdapterService.sendData(List.of(eventRecord), rideEvtID, "etk", "events", evtprimaryKey.orElse(null), 5000))
+                .thenRun(() -> approximateGeolocationEvent.execute(approximateGeolocationEvent.map(event), key));
     }
 }
