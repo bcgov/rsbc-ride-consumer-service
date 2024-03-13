@@ -73,8 +73,8 @@ public class GeocoderService {
                 geolocation.setBusinessProgram("ETK");
                 geolocation.setBusinessType("violation");
                 geolocation.setBusinessId(businessId);
-                geolocation.setLat("");
-                geolocation.setLong$("");
+                geolocation.setLat("PENDING");
+                geolocation.setLong$("PENDING");
                 geolocation.setPrecision("");
                 geolocation.setRequestedAddress("");
                 geolocation.setSubmittedAddress(address);
