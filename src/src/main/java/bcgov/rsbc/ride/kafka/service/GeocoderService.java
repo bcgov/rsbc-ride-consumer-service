@@ -74,7 +74,7 @@ public class GeocoderService {
                 geolocation.setLat("");
                 geolocation.setLong$("");
                 geolocation.setPrecision("");
-                geolocation.setRequestedAddress(jsonObject.getString("addressRaw"));
+                geolocation.setRequestedAddress("");
                 geolocation.setSubmittedAddress(address);
                 geolocation.setDatabcLong("");
                 geolocation.setDatabcLat("");
