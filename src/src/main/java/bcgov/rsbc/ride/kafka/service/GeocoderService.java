@@ -48,6 +48,67 @@ public class GeocoderService {
     @Inject
     ReconService reconService;
 
+
+    @WithSpan
+    public CompletionStage<ApproximateGeolocationRecord> setBlankGeoValues(GeolocationRequest geolocationRequest, String eventId, BackoffConfig backoffConfig) {
+        String addressRaw = geolocationRequest.violationHighwayDesc() + ", " + geolocationRequest.violationCityName();
+        String businessId = geolocationRequest.businessId();
+        String address = cleanUpAddress(addressRaw);
+        CompletableFuture<HttpResponse<Buffer>> responseFuture = new CompletableFuture<>();
+
+        responseFuture.complete(null);
+
+        return responseFuture.thenApply(resp -> {
+//            if (resp.statusCode() != 200) {
+//                logger.error("Error calling Geocoder API: " + resp.statusCode() + " " + resp.statusMessage());
+//                reconService.updateMainStagingStatus(eventId,"geocoder_error");
+//                reconService.sendErrorRecords(eventId,"error in getting geolocation","others");
+//                return null;
+//            }
+//            JSONObject jsonObject = new JSONObject(resp.bodyAsString());
+//            JSONObject dataBc = jsonObject.getJSONObject("dataBc");
+
+            try {
+                ApproximateGeolocationRecord geolocation =  new ApproximateGeolocationRecord();
+                geolocation.setBusinessProgram("ETK");
+                geolocation.setBusinessType("violation");
+                geolocation.setBusinessId(businessId);
+                geolocation.setLat("PENDING");
+                geolocation.setLong$("PENDING");
+                geolocation.setPrecision("");
+                geolocation.setRequestedAddress("");
+                geolocation.setSubmittedAddress(address);
+                geolocation.setDatabcLong("");
+                geolocation.setDatabcLat("");
+                geolocation.setDatabcScore("");
+                geolocation.setDatabcPrecision("");
+                geolocation.setFullAddress("");
+                geolocation.setFaults("");
+
+//                logger.info("Successful callGeocoderApi returning: " + geolocation + ", eventId: " + eventId);
+                logger.info("Successful set blank values for  " + geolocation + ", eventId: " + eventId);
+
+//                convert geolocation to responseFuture
+//                responseFuture.complete(resp);
+
+
+//                geolocation=new responseFuture(geolocation);
+
+                return geolocation;
+            }
+            catch (Exception e) {
+                logger.error("Error in converting geolocation to json: " + e.getMessage());
+                return null;
+            }
+        }).exceptionally(e -> {
+            reconService.updateMainStagingStatus(eventId,"geocoder_error");
+            reconService.sendErrorRecords(eventId,"error in setting blank geolocation","others");
+            throw new RuntimeException("Error in setting blank lat-long: " + e.getMessage());
+        });
+
+    }
+
+
     @WithSpan
     public CompletionStage<ApproximateGeolocationRecord> callGeocoderApi(GeolocationRequest geolocationRequest, String eventId, BackoffConfig backoffConfig) {
         String addressRaw = geolocationRequest.violationHighwayDesc() + ", " + geolocationRequest.violationCityName();

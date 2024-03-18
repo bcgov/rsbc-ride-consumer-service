@@ -166,6 +166,14 @@
               "type": "string"
             },
             {
+              "name": "ticket_status",
+              "type": "string"
+            },
+            {
+              "name": "ticket_status_trans",
+              "type": "string"
+            },
+            {
               "name": "counts",
               "type": {
                 "type": "array",
@@ -184,6 +192,11 @@
                     {
                       "name": "act_code",
                       "type": "string"
+                    },
+                    {
+                      "name": "act_trans",
+                      "type": "string",
+                      "default": ""
                     },
                     {
                       "name": "section_text",
