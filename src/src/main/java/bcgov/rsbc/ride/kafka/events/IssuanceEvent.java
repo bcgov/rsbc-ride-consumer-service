@@ -52,6 +52,9 @@ public class IssuanceEvent extends EtkEventHandler<String,IssuanceRecord> {
 
         eventPayload.remove("event");
         eventPayload.remove("counts");
+//        rename eventpayload field ticket_status to ticket_type
+        eventPayload.put("ticket_type", eventPayload.remove("ticket_status"));
+        eventPayload.put("ticket_type_trans", eventPayload.remove("ticket_status_trans"));
         String rideEvtID=key;
 
         reconService.updateMainStagingStatus(rideEvtID,"consumer_process");
