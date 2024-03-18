@@ -54,7 +54,7 @@ public class RideAdapterServiceTest {
     @Test
     public void testPaymentEvent() throws IOException {
         String eventId = "12345";
-        IssuanceRecord event = customObjectMapper.getObjectMapper().readValue(getFileContent("json/requests/dbadapter/event_payment.json"), IssuanceRecord.class);
+        PaymentRecord event = customObjectMapper.getObjectMapper().readValue(getFileContent("json/requests/dbadapter/event_payment.json"), PaymentRecord.class);
         event.setEventId(eventId);
         JSONObject payload = rideAdapterService.getPayload(List.of(event), eventId, "etk", "payments", null);
         System.out.println(payload.toJSONString());
@@ -74,7 +74,7 @@ public class RideAdapterServiceTest {
     @Test
     public void testViolationEvent() throws IOException {
         String eventId = "12345";
-        ViolationRecord event = customObjectMapper.getObjectMapper().readValue(getFileContent("json/requests/dbadapter/event_payment_query.json"), ViolationRecord.class);
+        ViolationRecord event = customObjectMapper.getObjectMapper().readValue(getFileContent("json/requests/dbadapter/event_violations.json"), ViolationRecord.class);
         event.getEvent().setId(eventId);
         JSONObject payload = rideAdapterService.getPayload(List.of(event), eventId, "etk", "violations", null);
         System.out.println(payload.toJSONString());
