@@ -17,11 +17,10 @@ import javax.enterprise.context.ApplicationScoped;
 public class ConverterUTMToWGS84 {
     public ApproximateGeolocationAdapter convert(PreciseGeolocationRecord event) {
         log.info("Converting UTM coordinates to WGS84 coordinates");
-        String easting = event.getXValue().trim();
-        String northing = event.getYValue().trim();
+        Double easting = Double.parseDouble(event.getXValue().trim());
+        Double northing = Double.parseDouble(event.getYValue().trim());
 
-        if (easting.equals("0") || northing.equals("0"))
-
+        if (easting.equals(0d) || northing.equals(0d))
         {
             return ApproximateGeolocationAdapter.builder()
                     .business_program("ETK")
@@ -42,7 +41,7 @@ public class ConverterUTMToWGS84 {
             CRSFactory crsFactory = new CRSFactory();
             ProjCoordinate latLongCoord = new ProjCoordinate();
             CoordinateReferenceSystem utmCrs = crsFactory.createFromName("EPSG:326" + zone);
-            ProjCoordinate utmCoord = new ProjCoordinate(Double.parseDouble(easting), Double.parseDouble(northing));
+            ProjCoordinate utmCoord = new ProjCoordinate(easting, northing);
             utmCrs.getProjection().inverseProject(utmCoord, latLongCoord);
 
             String originalLatitude = String.valueOf(latLongCoord.y);
