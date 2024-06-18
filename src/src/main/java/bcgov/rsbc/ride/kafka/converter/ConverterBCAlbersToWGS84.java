@@ -15,10 +15,10 @@ import javax.enterprise.context.ApplicationScoped;
 public class ConverterBCAlbersToWGS84{
     public ApproximateGeolocationAdapter convert(PreciseGeolocationRecord event) {
         log.info("Converting BC Albers coordinates to WGS84 coordinates");
-        String easting = event.getXValue().trim();
-        String northing = event.getYValue().trim();
+        Double easting = Double.parseDouble(event.getXValue().trim());
+        Double northing = Double.parseDouble(event.getYValue().trim());
 
-        if (easting.equals("0") || northing.equals("0"))
+        if (easting.equals(0d) || northing.equals(0d))
 
         {
             return ApproximateGeolocationAdapter.builder()
@@ -46,7 +46,7 @@ public class ConverterBCAlbersToWGS84{
             CoordinateTransform transform = transformFactory.createTransform(albersBC, wgs84);
 
             // Perform the conversion
-            ProjCoordinate albersCoord = new ProjCoordinate(Double.parseDouble(easting), Double.parseDouble(northing));
+            ProjCoordinate albersCoord = new ProjCoordinate(easting, northing);
             ProjCoordinate wgs84Coord = new ProjCoordinate();
             transform.transform(albersCoord, wgs84Coord);
 
