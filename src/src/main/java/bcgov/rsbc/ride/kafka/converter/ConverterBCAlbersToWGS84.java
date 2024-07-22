@@ -4,7 +4,7 @@ import bcgov.rsbc.ride.kafka.models.ApproximateGeolocationAdapter;
 import bcgov.rsbc.ride.kafka.models.PreciseGeolocationRecord;
 import lombok.extern.slf4j.Slf4j;
 import org.osgeo.proj4j.*;
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * This class converts BC Albers coordinates to latitude and longitude coordinates.

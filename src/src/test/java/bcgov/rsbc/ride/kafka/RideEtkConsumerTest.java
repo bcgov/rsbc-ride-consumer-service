@@ -13,7 +13,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.util.Objects;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -37,11 +37,11 @@ public class RideEtkConsumerTest {
     CustomObjectMapper customObjectMapper;
 
     WireMockServer wireMockServer;
-
+    AutoCloseable autoCloseable;
 
     @BeforeEach
     public void init() {
-        MockitoAnnotations.initMocks(this);
+        autoCloseable = MockitoAnnotations.openMocks(this);
         Options options = wireMockConfig().port(8082).bindAddress("127.0.0.1");
         wireMockServer = new WireMockServer(options);
         wireMockServer.start();

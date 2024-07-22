@@ -1,9 +1,9 @@
 package bcgov.rsbc.ride.kafka.factory;
 
 import bcgov.rsbc.ride.kafka.events.*;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
 import java.util.List;
 
 @ApplicationScoped
