@@ -2,8 +2,8 @@ package bcgov.rsbc.ride.kafka.factory;
 
 import bcgov.rsbc.ride.kafka.core.CustomObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.lang.reflect.*;
 
 @ApplicationScoped

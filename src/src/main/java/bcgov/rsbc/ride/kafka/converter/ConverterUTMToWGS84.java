@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.osgeo.proj4j.CRSFactory;
 import org.osgeo.proj4j.CoordinateReferenceSystem;
 import org.osgeo.proj4j.ProjCoordinate;
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * This class converts UTM coordinates to latitude and longitude coordinates.

@@ -1,7 +1,6 @@
 plugins {
     id 'java'
     id 'io.quarkus'
-    id "jacoco"
     id "org.sonarqube" version "4.2.1.3168"
 }
 
@@ -23,28 +22,20 @@ repositories {
     }
 }
 
-jacocoTestReport {
-    reports {
-        xml.enabled true
-    }
-}
-
 sonar {
-  properties {
-    property "sonar.projectKey", "bcgov_rsbc-ride-consumer-service"
-    property "sonar.organization", "bcgov-sonarcloud"
-    property "sonar.host.url", "https://sonarcloud.io"
-  }
+    properties {
+        property "sonar.projectKey", "bcgov_rsbc-ride-consumer-service"
+        property "sonar.organization", "bcgov-sonarcloud"
+        property "sonar.host.url", "https://sonarcloud.io"
+    }
 }
 
 dependencies {
     implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
-    implementation 'io.quarkus:quarkus-resteasy'
-    implementation 'io.quarkus:quarkus-resteasy-mutiny'
     implementation 'io.quarkus:quarkus-arc'
-    implementation 'io.quarkus:quarkus-resteasy-jackson'
+    implementation 'io.quarkus:quarkus-rest-jackson'
     implementation 'io.quarkus:quarkus-kafka-client'
-    implementation 'io.quarkus:quarkus-smallrye-reactive-messaging-kafka'
+    implementation 'io.quarkus:quarkus-messaging-kafka'
     implementation 'io.quarkus:quarkus-smallrye-openapi'
     implementation 'io.quarkus:quarkus-avro'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
@@ -52,8 +43,8 @@ dependencies {
 
     //    To support Confluent registry schema formats
     implementation 'io.confluent:kafka-avro-serializer:7.0.1'   
-    implementation 'io.quarkus:quarkus-confluent-registry-avro:2.10.2.Final'
-    implementation 'io.quarkus:quarkus-rest-client-reactive:2.10.2.Final'
+    implementation 'io.quarkus:quarkus-confluent-registry-avro'
+    implementation 'io.quarkus:quarkus-rest-client'
     implementation 'io.confluent:kafka-json-serializer:7.3.2'
     implementation 'io.confluent:kafka-json-schema-serializer:7.4.0'
     implementation 'org.everit.json:org.everit.json.schema:1.5.1'
@@ -65,7 +56,7 @@ dependencies {
     testImplementation 'io.rest-assured:rest-assured'
     testImplementation 'org.mockito:mockito-core:3.12.4'
     testImplementation 'com.github.tomakehurst:wiremock:3.0.1'
-    testImplementation 'io.quarkus:quarkus-resteasy-jackson'
+    testImplementation 'io.quarkus:quarkus-rest-jackson'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
 
@@ -80,7 +71,6 @@ dependencies {
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-avro:2.12.4'
 
     // Json Dependencies
-    implementation 'io.quarkus:quarkus-resteasy-jsonb'
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
     // OpenTelemetry Dependencies
@@ -99,8 +89,8 @@ group 'bcgov.rsbc.ride.kafka'
 version '1.0.0'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 test {
