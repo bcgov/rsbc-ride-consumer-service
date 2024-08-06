@@ -5,8 +5,8 @@ import bcgov.rsbc.ride.kafka.factory.EtkEventFactory;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import io.smallrye.reactive.messaging.kafka.Record;
 import org.jboss.logging.Logger;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class EtkConsumerService {
