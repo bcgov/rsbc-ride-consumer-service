@@ -32,11 +32,39 @@ public class RideDFv2ConsumerModule {
 
     @Incoming("incoming-vievent")
     @Blocking
-    public void receive(Record<Long, viPayloadRecord> event) {
+    public void receiveVi(Record<Long, viPayloadRecord> event) {
         logger.info("Payload: {}", event);
         try {
             Long recordKey= event.key();
             viPayloadRecord recordValue = event.value();
+            logger.info("Kafka decoded event UID: {}", recordKey);
+            consumerService.publishEventToDecodedTopic(recordValue.toString(),recordValue.getEventType(),recordKey);
+        } catch (Exception e) {
+            logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
+        }
+    }
+
+    @Incoming("incoming-twelvehrevent")
+    @Blocking
+    public void receiveTwelve(Record<Long, twelveHoursPayloadRecord> event) {
+        logger.info("Payload: {}", event);
+        try {
+            Long recordKey= event.key();
+            twelveHoursPayloadRecord recordValue = event.value();
+            logger.info("Kafka decoded event UID: {}", recordKey);
+            consumerService.publishEventToDecodedTopic(recordValue.toString(),recordValue.getEventType(),recordKey);
+        } catch (Exception e) {
+            logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
+        }
+    }
+
+    @Incoming("incoming-twentyfourhrevent")
+    @Blocking
+    public void receiveTwentyFour(Record<Long, twentyFourHoursPayloadRecord> event) {
+        logger.info("Payload: {}", event);
+        try {
+            Long recordKey= event.key();
+            twentyFourHoursPayloadRecord recordValue = event.value();
             logger.info("Kafka decoded event UID: {}", recordKey);
             consumerService.publishEventToDecodedTopic(recordValue.toString(),recordValue.getEventType(),recordKey);
         } catch (Exception e) {
