@@ -34,9 +34,9 @@ public class DFv2ConsumerService {
     private final HashMap<String, MutinyEmitter<Record<String, String>>> emitterMap = new HashMap<>();
 
     private void initializeMap() {
-        emitterMap.put("vi-submitted", emitterViEvent);
-        emitterMap.put("12hr-submitted", emitterTwelveHourEvent);
-        emitterMap.put("24hr-submitted", emitterTwentyFourHourEvent);
+        emitterMap.put("vi_submitted", emitterViEvent);
+        emitterMap.put("12hr_submitted", emitterTwelveHourEvent);
+        emitterMap.put("24hr_submitted", emitterTwentyFourHourEvent);
     }
 
     public void publishEventToDecodedTopic(String eventPayload,String eventType,Long uid) {
@@ -48,7 +48,7 @@ public class DFv2ConsumerService {
                 logger.debug(emitterMap.get(eventType).toString());
                 emitterMap.get(eventType).send(Record.of(uid.toString(), eventPayload)).await().atMost(Duration.ofSeconds(5));
             } else {
-                logger.warn("no matches for the event type");
+                logger.error("no matches for the event type: {}", eventType);
             }
         } catch (Exception e) {
             logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
