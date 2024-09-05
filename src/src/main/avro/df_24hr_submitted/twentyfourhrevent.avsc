@@ -175,7 +175,7 @@
             {
               "name": "reasonableGroundOther",
               "doc": "",
-              "type": ["null","string"]
+              "type": ["null","boolean"]
             },
             {
               "name": "reasonableGroundOtherReason",
@@ -185,12 +185,12 @@
             {
               "name": "prescribedTestUsed",
               "doc": "",
-              "type": ["null","string"]
+              "type": ["null","boolean"]
             },
             {
               "name": "requestedPrescribedTest",
               "doc": "",
-              "type": ["null","string"]
+              "type": ["null","boolean"]
             },
             {
               "name": "requestedAlcoholTestResult",
