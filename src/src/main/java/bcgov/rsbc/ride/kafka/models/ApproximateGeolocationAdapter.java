@@ -58,6 +58,9 @@ public class ApproximateGeolocationAdapter {
     @JsonProperty("alternate_score")
     private String alternate_score;
 
+    @JsonProperty("alternate_source")
+    private String alternate_source;
+
     @JsonProperty("alternate_precision")
     private String alternate_precision;
 
