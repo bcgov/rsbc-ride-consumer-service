@@ -42,7 +42,7 @@ public class RideDFConsumerModule {
             Long recordKey= event.key();
             appacceptedpayloadrecord recordValue = event.value();
             logger.info("Kafka decoded event UID: {}", recordKey);
-            consumerService.publishEventtoDecodedTopic(recordValue.toString(),recordValue.getEventType().toString(),recordKey);
+            consumerService.publishEventToDecodedTopic(recordValue.toString(),recordValue.getEventType(),recordKey);
         } catch (Exception e) {
             logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
         }
@@ -56,7 +56,7 @@ public class RideDFConsumerModule {
             Long recordKey= event.key();
             disclosuresentpayloadrecord recordValue = event.value();
             logger.info("Kafka decoded event UID: {}", recordKey);
-            consumerService.publishEventtoDecodedTopic(recordValue.toString(),recordValue.getEventType().toString(),recordKey);
+            consumerService.publishEventToDecodedTopic(recordValue.toString(),recordValue.getEventType(),recordKey);
         } catch (Exception e) {
             logger.error("Exception occurred while sending decoded event, exception details: {}", e + "; " + e.getMessage());
         }
@@ -70,7 +70,7 @@ public class RideDFConsumerModule {
             Long recordKey= event.key();
             evidencesubmittedpayloadrecord recordValue = event.value();
             logger.info("Kafka decoded event UID: {}", recordKey);
-            consumerService.publishEventtoDecodedTopic(recordValue.toString(),recordValue.getEventType().toString(),recordKey);
+            consumerService.publishEventToDecodedTopic(recordValue.toString(),recordValue.getEventType(),recordKey);
         } catch (Exception e) {
             logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
         }
@@ -84,7 +84,7 @@ public class RideDFConsumerModule {
             Long recordKey= event.key();
             payrecvdpayloadrecord recordValue = event.value();
             logger.info("Kafka decoded event UID: {}", recordKey);
-            consumerService.publishEventtoDecodedTopic(recordValue.toString(),recordValue.getEventType().toString(),recordKey);
+            consumerService.publishEventToDecodedTopic(recordValue.toString(),recordValue.getEventType(),recordKey);
         } catch (Exception e) {
             logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
         }
@@ -98,7 +98,7 @@ public class RideDFConsumerModule {
             Long recordKey= event.key();
             reviewscheduledpayloadrecord recordValue = event.value();
             logger.info("Kafka decoded event UID: {}", recordKey);
-            consumerService.publishEventtoDecodedTopic(recordValue.toString(),recordValue.getEventType().toString(),recordKey);
+            consumerService.publishEventToDecodedTopic(recordValue.toString(),recordValue.getEventType(),recordKey);
         } catch (Exception e) {
             logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
         }
