@@ -2,7 +2,6 @@ package bcgov.rsbc.ride.kafka;
 
 import bcgov.rsbc.ride.kafka.models.*;
 import bcgov.rsbc.ride.kafka.service.ConsumerService;
-import bcgov.rsbc.ride.kafka.service.DFv2ConsumerService;
 import io.smallrye.reactive.messaging.annotations.Blocking;
 import io.smallrye.reactive.messaging.kafka.Record;
 import jakarta.inject.Inject;
@@ -21,7 +20,7 @@ public class RideDFv2ConsumerModule {
     private final static Logger logger = LoggerFactory.getLogger(RideDFv2ConsumerModule.class);
 
     @Inject
-    DFv2ConsumerService consumerService;
+    ConsumerService consumerService;
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
