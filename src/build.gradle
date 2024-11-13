@@ -83,6 +83,9 @@ dependencies {
     // Geotools
     implementation 'org.osgeo:proj4j:0.1.0'
     implementation 'org.geotools:gt-main:27.0'
+
+    // to support Prometheus istrumentation
+    implementation 'io.quarkus:quarkus-micrometer-registry-prometheus'
 }
 
 group 'bcgov.rsbc.ride.kafka'
