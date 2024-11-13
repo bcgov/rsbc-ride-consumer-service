@@ -35,6 +35,9 @@ public class ConverterBCAlbersToWGS84{
                     .databc_long("")
                     .databc_lat("")
                     .databc_score("")
+                    .alternate_lat(event.getYValue().trim())
+                    .alternate_long(event.getXValue().trim())
+                    .alternate_source(event.getServerCode())
                     .build();
 
         }else{
@@ -81,6 +84,9 @@ public class ConverterBCAlbersToWGS84{
                     .databc_long("")
                     .databc_lat("")
                     .databc_score("")
+                    .alternate_lat(event.getYValue().trim())
+                    .alternate_long(event.getXValue().trim())
+                    .alternate_source(event.getServerCode())
                     .build();
 
         }
