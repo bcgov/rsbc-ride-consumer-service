@@ -34,6 +34,9 @@ public class ConverterUTMToWGS84 {
                     .databc_long("")
                     .databc_lat("")
                     .databc_score("")
+                    .alternate_lat(event.getYValue().trim())
+                    .alternate_long(event.getXValue().trim())
+                    .alternate_source(event.getServerCode())
                     .build();
         }else{
             // Create a Coordinate Reference and a ProjCoordinate object to represent this coordinates
@@ -69,6 +72,9 @@ public class ConverterUTMToWGS84 {
                     .databc_long("")
                     .databc_lat("")
                     .databc_score("")
+                    .alternate_lat(event.getYValue().trim())
+                    .alternate_long(event.getXValue().trim())
+                    .alternate_source(event.getServerCode())
                     .build();
         }
 
