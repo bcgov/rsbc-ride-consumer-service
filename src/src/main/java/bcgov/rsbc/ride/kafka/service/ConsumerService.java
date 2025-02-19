@@ -3,6 +3,8 @@ package bcgov.rsbc.ride.kafka.service;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.time.Duration;
+import java.util.HashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eclipse.microprofile.reactive.messaging.Channel;
@@ -38,57 +40,51 @@ public class ConsumerService {
     @Channel("outgoing-review_scheduled_decoded")
     MutinyEmitter<Record<String, String>> emitterRevSchedEvent;
 
-    public boolean publishEventtoDecodedTopic(String eventPayload,String eventType,Long uid) {
+    @Inject
+    @Channel("outgoing-vievent-decoded")
+    MutinyEmitter<Record<String, String>> emitterViEvent;
 
-        switch(eventType) {
-            case "sample":
-                logger.info(eventPayload);
-                emitterTestEvt.send(Record.of(uid.toString(), eventPayload)).await().atMost(Duration.ofSeconds(5));
-                break;
-            case "app_accepted":
-                try {
-                    logger.info(eventPayload);
-                    emitterAppAccptdEvent.send(Record.of(uid.toString(), eventPayload)).await().atMost(Duration.ofSeconds(5));
-                } catch (Exception e) {
-                    logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
-                }
-                break;
-            case "disclosure_sent":
-                try {
-                    logger.info(eventPayload);
-                    emitterDisclosureSentEvent.send(Record.of(uid.toString(), eventPayload)).await().atMost(Duration.ofSeconds(5));
-                } catch (Exception e) {
-                    logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
-                }
-                break;
-            case "evidence_submitted":
-                try {
-                    logger.info(eventPayload);
-                    emitterEvidenceSubmitEvent.send(Record.of(uid.toString(), eventPayload)).await().atMost(Duration.ofSeconds(5));
-                } catch (Exception e) {
-                    logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
-                }
-                break;
-            case "payment_received":
-                try {
-                    logger.info(eventPayload);
-                    emitterPayRecvdEvent.send(Record.of(uid.toString(), eventPayload)).await().atMost(Duration.ofSeconds(5));
-                } catch (Exception e) {
-                    logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
-                }
-                break;
-            case "review_scheduled":
-                try {
-                    logger.info(eventPayload);
-                    emitterRevSchedEvent.send(Record.of(uid.toString(), eventPayload)).await().atMost(Duration.ofSeconds(5));
-                } catch (Exception e) {
-                    logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
-                }
-                break;
-            default:
-                logger.info(eventPayload);
-                logger.info("no matches for the event type");
+    @Inject
+    @Channel("outgoing-twelvehrevent-decoded")
+    MutinyEmitter<Record<String, String>> emitterTwelveHourEvent;
+
+    @Inject
+    @Channel("outgoing-twentyfourhrevent-decoded")
+    MutinyEmitter<Record<String, String>> emitterTwentyFourHourEvent;
+
+    @Inject
+    @Channel("outgoing-gis-geolocation-decoded")
+    MutinyEmitter<Record<String, String>> emitterGisGeolocationEvent;
+
+    private final HashMap<String, MutinyEmitter<Record<String, String>>> emitterMap = new HashMap<>();
+
+    private void initializeMap() {
+        emitterMap.put("sample", emitterTestEvt);
+        emitterMap.put("app_accepted", emitterAppAccptdEvent);
+        emitterMap.put("disclosure_sent", emitterDisclosureSentEvent);
+        emitterMap.put("evidence_submitted", emitterEvidenceSubmitEvent);
+        emitterMap.put("payment_received", emitterPayRecvdEvent);
+        emitterMap.put("review_scheduled", emitterRevSchedEvent);
+
+        emitterMap.put("vi_submitted", emitterViEvent);
+        emitterMap.put("12hr_submitted", emitterTwelveHourEvent);
+        emitterMap.put("24hr_submitted", emitterTwentyFourHourEvent);
+        emitterMap.put("gis_geolocation", emitterGisGeolocationEvent);
+    }
+
+    public void publishEventToDecodedTopic(String eventPayload,String eventType,Long uid) {
+        logger.info("publishing event id {} type {} to decoded topic", uid, eventType);
+        logger.debug("payload: {}", eventPayload);
+        initializeMap();
+        try {
+            if (emitterMap.containsKey(eventType)) {
+                logger.debug(emitterMap.get(eventType).toString());
+                emitterMap.get(eventType).send(Record.of(uid.toString(), eventPayload)).await().atMost(Duration.ofSeconds(5));
+            } else {
+                logger.error("no matches for the event type: {}", eventType);
+            }
+        } catch (Exception e) {
+            logger.error("Exception occurred while sending decoded event, exception details: {}", e.toString() + "; " + e.getMessage());
         }
-        return false;
     }
 }
