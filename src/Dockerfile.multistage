@@ -1,5 +1,6 @@
 FROM artifacts.developer.gov.bc.ca/rbe5-images/ubi-quarkus-graalvmce-builder-image:jdk-17 AS build
 
+
 ARG APP_ACCEPTED_EVENT_TOPIC
 ENV APP_ACCEPTED_EVENT_TOPIC=$APP_ACCEPTED_EVENT_TOPIC
 
