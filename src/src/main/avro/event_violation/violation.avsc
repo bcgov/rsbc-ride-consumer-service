@@ -46,7 +46,7 @@
             },
             {
               "name": "wording_number",
-              "type": "int"
+              "type":  ["null","int"]
             },
             {
               "name": "event",
