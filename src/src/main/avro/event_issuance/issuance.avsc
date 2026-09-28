@@ -41,6 +41,31 @@
               "type": "string"
             },
             {
+              "name": "person_residence_country_cd",
+              "type": "string"
+            },
+            {
+              "name": "person_residence_country_nm",
+              "type": "string"
+            },
+            {
+              "name": "drivers_licence_country_cd",
+              "type": "string"
+            },
+            {
+              "name": "drivers_licence_country_nm",
+              "type": "string"
+            },
+            {
+              "name": "drivers_licence_class_cd",
+              "type": "string"
+            },
+            {
+              "name": "drivers_licence_class_txt",
+              "type": "string"
+            },
+
+            {
               "name": "person_residence_city_name",
               "type": "string"
             },
